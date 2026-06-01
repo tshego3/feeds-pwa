@@ -23,11 +23,6 @@ if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
 
-      // Request notification permission (non-blocking)
-      if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission();
-      }
-
       // Register periodic background sync (Chromium only, requires PWA install)
       if ('periodicSync' in registration) {
         try {
