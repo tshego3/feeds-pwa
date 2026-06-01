@@ -2,6 +2,7 @@ import type { FeedError } from '../types';
 
 const NETLIFY_PROXY = 'https://rss-proxy-api.netlify.app/.netlify/functions/fetch-xml?url=';
 const CODETABS_PROXY = 'https://api.codetabs.com/v1/proxy/?quest=';
+const ALLORIGINS_PROXY = 'https://api.allorigins.win/raw?url=';
 const TIMEOUT_MS = 15_000;
 
 async function fetchWithTimeout(url: string): Promise<Response> {
@@ -37,6 +38,14 @@ export async function fetchFeedXml(feedUrl: string): Promise<string> {
   // Tier 3: Codetabs proxy
   try {
     const res = await fetchWithTimeout(`${CODETABS_PROXY}${encoded}`);
+    if (res.ok) return res.text();
+  } catch {
+    // fall through to next proxy
+  }
+
+  // Tier 4: AllOrigins proxy
+  try {
+    const res = await fetchWithTimeout(`${ALLORIGINS_PROXY}${encoded}`);
     if (res.ok) return res.text();
   } catch {
     // all tiers failed
