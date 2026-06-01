@@ -1,0 +1,30 @@
+{
+  "name": "feeds",
+  "short_name": "feeds",
+  "description": "Offline-capable RSS feed reader",
+  "start_url": "/feeds-pwa/",
+  "scope": "/feeds-pwa/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#131313",
+  "background_color": "#131313",
+  "categories": ["news", "productivity"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
+      "purpose": "maskable"
+    }
+  ]
+}
