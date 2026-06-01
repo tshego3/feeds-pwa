@@ -16,6 +16,7 @@ import { NewArticlesBanner } from './components/NewArticlesBanner';
 import { useRouter } from './hooks/useRouter';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { useAutoRefresh } from './hooks/useAutoRefresh';
+import { showNewArticlesNotification } from './notifications';
 
 export function App() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -42,6 +43,7 @@ export function App() {
         setArticles(parsed);
         setNewArticleCount(newItems.length);
         await cacheArticles(parsed);
+        await showNewArticlesNotification(selectedFeed.title, newItems.length);
       }
     } catch {
       // Silent refresh failures are ignored
@@ -166,26 +168,35 @@ export function App() {
 
   return (
     <AppShell
-      navbar={isDesktop ? { width: 260, breakpoint: 'sm' } : undefined}
+      navbar={isDesktop ? { width: 272, breakpoint: 'sm' } : undefined}
       style={{ backgroundColor: tokens.background }}
     >
       {isDesktop && (
         <AppShell.Navbar
           style={{
-            backgroundColor: tokens.surface,
-            borderRight: `1px solid ${tokens.border}`,
+            backgroundColor: tokens.surfaceContainerLow,
+            borderRight: `1px solid ${tokens.outlineVariant}`,
           }}
         >
-          <Box p="md">
-            <Text size="lg" fw={700} c={tokens.textPrimary}>
+          <Box style={{ padding: '32px 24px 24px' }}>
+            <Text
+              style={{
+                fontSize: 32,
+                fontWeight: 700,
+                letterSpacing: '-0.05em',
+                color: tokens.primary,
+              }}
+            >
               feeds
             </Text>
           </Box>
-          <FeedSidebar
-            menuItems={menuItems}
-            selectedFeedId={selectedFeed?.id ?? null}
-            onSelectFeed={selectFeed}
-          />
+          <ScrollArea style={{ flex: 1 }}>
+            <FeedSidebar
+              menuItems={menuItems}
+              selectedFeedId={selectedFeed?.id ?? null}
+              onSelectFeed={selectFeed}
+            />
+          </ScrollArea>
         </AppShell.Navbar>
       )}
 
@@ -199,20 +210,36 @@ export function App() {
         {!isDesktop && screen === 'home' && (
           <Box
             style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 50,
               display: 'flex',
               alignItems: 'center',
               gap: 12,
               padding: '12px 16px',
-              borderBottom: `1px solid ${tokens.border}`,
-              backgroundColor: tokens.surface,
+              borderBottom: `1px solid ${tokens.outlineVariant}`,
+              backgroundColor: `${tokens.surface}CC`,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
             }}
           >
-            <UnstyledButton onClick={() => setShowMobileDrawer(true)}>
-              <IconMenu2 size={22} color={tokens.textPrimary} stroke={1.5} />
+            <UnstyledButton onClick={() => setShowMobileDrawer(true)} style={{ color: tokens.primary }}>
+              <IconMenu2 size={20} stroke={1.5} />
             </UnstyledButton>
-            <Text size="md" fw={600} c={tokens.textPrimary} lineClamp={1} style={{ flex: 1 }}>
-              {selectedFeed?.title ?? 'feeds'}
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: 700,
+                letterSpacing: '-0.04em',
+                color: tokens.primary,
+                flex: 1,
+              }}
+            >
+              feeds
             </Text>
+            <UnstyledButton onClick={() => navigate('search')} style={{ color: tokens.primary }}>
+              <IconSearch size={20} stroke={1.5} />
+            </UnstyledButton>
           </Box>
         )}
 
@@ -228,7 +255,7 @@ export function App() {
           >
             <Overlay
               opacity={0.4}
-              color="#000"
+              color={tokens.background}
               onClick={() => setShowMobileDrawer(false)}
               style={{ position: 'absolute', inset: 0, zIndex: 0 }}
             />
@@ -236,16 +263,23 @@ export function App() {
               style={{
                 position: 'relative',
                 zIndex: 1,
-                width: 280,
+                width: 272,
                 height: '100%',
-                backgroundColor: tokens.surface,
-                borderRight: `1px solid ${tokens.border}`,
+                backgroundColor: tokens.surfaceContainerLow,
+                borderRight: `1px solid ${tokens.outlineVariant}`,
                 display: 'flex',
                 flexDirection: 'column',
               }}
             >
-              <Box p="md" style={{ borderBottom: `1px solid ${tokens.border}` }}>
-                <Text size="lg" fw={700} c={tokens.textPrimary}>
+              <Box style={{ padding: '32px 24px 24px', borderBottom: `1px solid ${tokens.outlineVariant}` }}>
+                <Text
+                  style={{
+                    fontSize: 32,
+                    fontWeight: 700,
+                    letterSpacing: '-0.05em',
+                    color: tokens.primary,
+                  }}
+                >
                   feeds
                 </Text>
               </Box>
@@ -285,6 +319,7 @@ export function App() {
             isLoading={isLoading}
             errorMessage={errorMessage}
             suppressHeroImage={selectedFeed?.suppressHeroImage ?? false}
+            feedTitle={selectedFeed?.title ?? 'All Articles'}
             onSelectArticle={handleSelectArticle}
             onRetry={() => selectedFeed && selectFeed(selectedFeed)}
           />
@@ -303,30 +338,47 @@ export function App() {
             left: 0,
             right: 0,
             display: 'flex',
-            backgroundColor: tokens.surface,
-            borderTop: `1px solid ${tokens.border}`,
+            backgroundColor: `${tokens.surfaceContainerLow}CC`,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderTop: `1px solid ${tokens.outlineVariant}`,
             zIndex: 100,
+            padding: '8px 0',
           }}
         >
-          {tabs.map((tab) => (
-            <UnstyledButton
-              key={tab.id}
-              onClick={() => navigate(tab.id)}
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: '10px 0',
-                color: screen === tab.id ? tokens.accent : tokens.textSecondary,
-              }}
-            >
-              <tab.icon size={20} stroke={1.5} />
-              <Text size="xs" mt={2}>
-                {tab.label}
-              </Text>
-            </UnstyledButton>
-          ))}
+          {tabs.map((tab) => {
+            const isActive = screen === tab.id;
+            return (
+              <UnstyledButton
+                key={tab.id}
+                onClick={() => navigate(tab.id)}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  padding: '4px 12px',
+                  color: isActive ? tokens.primary : tokens.onSurfaceVariant,
+                }}
+              >
+                <Box
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px 12px',
+                    borderRadius: 12,
+                    backgroundColor: isActive ? `${tokens.secondaryContainer}80` : 'transparent',
+                  }}
+                >
+                  <tab.icon size={22} stroke={1.5} />
+                </Box>
+                <Text style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', marginTop: 4 }}>
+                  {tab.label}
+                </Text>
+              </UnstyledButton>
+            );
+          })}
         </Box>
       )}
     </AppShell>

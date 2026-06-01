@@ -13,14 +13,26 @@ const dark: MantineColorsTuple = [
   '#2D2D2D', // 9
 ];
 
+// Mirrors native Theme.swift Dark (Monolithic Clarity) palette
 export const tokens = {
   background: '#131313',
-  surface: '#1C1C1C',
+  surface: '#131313',
+  surfaceContainerLow: '#1C1B1B',
+  surfaceContainerHigh: '#2A2A2A',
+  surfaceVariant: '#353534',
   elevated: '#2D2D2D',
-  textPrimary: '#F5F5F5',
-  textSecondary: '#999999',
+  primary: '#FFFFFF',
+  onPrimary: '#131313',
+  onSurface: '#E5E2E1',
+  onSurfaceVariant: '#C4C7C8',
+  secondaryContainer: '#303030',
+  outline: '#8E9192',
+  outlineVariant: '#444748',
+  error: '#FFAB0B',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#C4C7C8',
   accent: '#FFFFFF',
-  border: '#2D2D2D',
+  border: '#444748',
 } as const;
 
 export const theme = createTheme({

@@ -1,54 +1,188 @@
-import { Card, Image, Text, Overlay, Box } from '@mantine/core';
+import { Box, Text, UnstyledButton } from '@mantine/core';
+import { IconBookmark, IconBookmarkFilled, IconExternalLink } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
 
 interface FeaturedArticleCardProps {
   readonly article: FeedItem;
   readonly onSelect: (article: FeedItem) => void;
+  readonly isBookmarked?: boolean;
+  readonly onToggleBookmark?: (article: FeedItem) => void;
 }
 
-export function FeaturedArticleCard({ article, onSelect }: FeaturedArticleCardProps) {
+export function FeaturedArticleCard({
+  article,
+  onSelect,
+  isBookmarked,
+  onToggleBookmark,
+}: FeaturedArticleCardProps) {
   const imageUrl = article.imageUrls[0];
+  const formattedDate = article.pubDate ? formatDate(article.pubDate) : '';
 
   return (
-    <Card
-      padding={0}
-      radius="lg"
+    <Box
       onClick={() => onSelect(article)}
       style={{
-        cursor: 'pointer',
-        backgroundColor: tokens.surface,
         position: 'relative',
         overflow: 'hidden',
-        height: 380,
+        borderRadius: 16,
+        border: `1px solid ${tokens.outlineVariant}`,
+        height: imageUrl ? 380 : 200,
+        cursor: 'pointer',
+        maxWidth: 720,
       }}
     >
-      {imageUrl ? (
-        <Image src={imageUrl} alt={article.title} h={380} fit="cover" />
-      ) : (
-        <Box style={{ height: 380, backgroundColor: tokens.elevated }} />
+      {/* Background image (grayscale) */}
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt=""
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'saturate(0)',
+          }}
+        />
       )}
-      <Overlay
-        gradient="linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 60%)"
-        zIndex={1}
+
+      {/* Fallback solid background */}
+      {!imageUrl && (
+        <Box
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: tokens.surfaceContainerLow,
+          }}
+        />
+      )}
+
+      {/* Gradient overlay */}
+      <Box
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `linear-gradient(to top, ${tokens.background} 0%, ${tokens.background}66 40%, transparent 100%)`,
+        }}
       />
+
+      {/* Content overlay */}
       <Box
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          padding: 20,
-          zIndex: 2,
+          padding: 24,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
         }}
       >
-        <Text size="lg" fw={600} c={tokens.textPrimary} lineClamp={2}>
+        {/* Metadata row */}
+        <Box style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Box
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: tokens.primary,
+              flexShrink: 0,
+            }}
+          />
+          <Text
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: tokens.onSurfaceVariant,
+              textTransform: 'uppercase',
+            }}
+          >
+            {formattedDate}
+          </Text>
+        </Box>
+
+        {/* Title */}
+        <Text
+          lineClamp={3}
+          style={{
+            fontSize: 32,
+            fontWeight: 600,
+            letterSpacing: '-0.02em',
+            lineHeight: 1.2,
+            color: tokens.primary,
+          }}
+        >
           {article.title}
         </Text>
-        <Text size="xs" c={tokens.textSecondary} mt={4}>
-          {article.pubDate.substring(0, 16)}
-        </Text>
+
+        {/* Description */}
+        {article.description && (
+          <Text
+            lineClamp={2}
+            style={{
+              fontSize: 17,
+              lineHeight: 1.5,
+              color: tokens.onSurfaceVariant,
+            }}
+          >
+            {article.description}
+          </Text>
+        )}
+
+        {/* Action row */}
+        <Box style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '10px 16px',
+              borderRadius: 999,
+              backgroundColor: tokens.primary,
+              color: tokens.onPrimary,
+              fontSize: 13,
+              fontWeight: 500,
+            }}
+          >
+            Read Article
+          </Box>
+          <Box style={{ flex: 1 }} />
+          {onToggleBookmark && (
+            <UnstyledButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleBookmark(article);
+              }}
+              style={{ padding: 8, color: isBookmarked ? tokens.primary : tokens.onSurfaceVariant }}
+            >
+              {isBookmarked ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
+            </UnstyledButton>
+          )}
+          <UnstyledButton
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(article.link, '_blank', 'noopener,noreferrer');
+            }}
+            style={{ padding: 8, color: tokens.onSurfaceVariant }}
+          >
+            <IconExternalLink size={20} />
+          </UnstyledButton>
+        </Box>
       </Box>
-    </Card>
+    </Box>
   );
+}
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr.substring(0, 16);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateStr.substring(0, 16);
+  }
 }

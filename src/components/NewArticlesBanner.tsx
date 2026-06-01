@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Box, Text, CloseButton } from '@mantine/core';
+import { Box, Text, UnstyledButton } from '@mantine/core';
+import { IconNews, IconX } from '@tabler/icons-react';
 import { tokens } from '../theme';
 
 interface NewArticlesBannerProps {
@@ -24,23 +25,34 @@ export function NewArticlesBanner({ count, onDismiss }: NewArticlesBannerProps) 
     <Box
       style={{
         position: 'fixed',
-        top: 12,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 200,
-        backgroundColor: tokens.elevated,
-        border: `1px solid ${tokens.border}`,
-        borderRadius: 8,
-        padding: '8px 16px',
+        top: 8,
+        left: 16,
+        right: 16,
+        zIndex: 300,
         display: 'flex',
-        alignItems: 'center',
-        gap: 8,
+        justifyContent: 'center',
       }}
     >
-      <Text size="sm" c={tokens.textPrimary}>
-        {count} new {count === 1 ? 'article' : 'articles'}
-      </Text>
-      <CloseButton size="sm" c={tokens.textSecondary} onClick={onDismiss} />
+      <Box
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '12px 16px',
+          backgroundColor: `${tokens.primary}F2`,
+          borderRadius: 12,
+          boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+        }}
+      >
+        <IconNews size={18} color={tokens.onPrimary} />
+        <Text style={{ fontSize: 15, fontWeight: 500, color: tokens.onPrimary }}>
+          New articles available
+        </Text>
+        <Box style={{ flex: 1 }} />
+        <UnstyledButton onClick={onDismiss} style={{ color: tokens.onPrimary, display: 'flex' }}>
+          <IconX size={14} />
+        </UnstyledButton>
+      </Box>
     </Box>
   );
 }

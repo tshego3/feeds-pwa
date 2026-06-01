@@ -1,5 +1,5 @@
-import { Box, Text, ActionIcon, Image, ScrollArea } from '@mantine/core';
-import { IconArrowLeft, IconBookmark, IconBookmarkFilled, IconExternalLink } from '@tabler/icons-react';
+import { Box, Text, UnstyledButton } from '@mantine/core';
+import { IconArrowLeft, IconBookmark, IconBookmarkFilled, IconExternalLink, IconTextSize } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
@@ -11,8 +11,12 @@ interface ArticleReadingProps {
   readonly onBack: () => void;
 }
 
+const FONT_SCALES = [1.0, 1.2, 1.4] as const;
+
 export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingProps) {
   const [bookmarked, setBookmarked] = useState(false);
+  const [fontScaleIndex, setFontScaleIndex] = useState(0);
+  const fontScale = FONT_SCALES[fontScaleIndex] ?? 1.0;
 
   useEffect(() => {
     isBookmarked(article.link).then(setBookmarked);
@@ -35,62 +39,191 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
     }
   }
 
+  function cycleFontSize() {
+    setFontScaleIndex((prev) => (prev + 1) % FONT_SCALES.length);
+  }
+
+  const formattedDate = formatDate(article.pubDate);
+  const imageUrl = article.imageUrls[0];
+
   return (
-    <Box style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: '12px 16px',
-          borderBottom: `1px solid ${tokens.border}`,
-          backgroundColor: tokens.surface,
-        }}
-      >
-        <ActionIcon variant="subtle" color="gray" onClick={onBack}>
-          <IconArrowLeft size={20} />
-        </ActionIcon>
-        <Text size="sm" fw={500} c={tokens.textPrimary} style={{ flex: 1 }} lineClamp={1}>
-          {feedTitle}
-        </Text>
-        <ActionIcon variant="subtle" color="gray" onClick={toggleBookmark}>
-          {bookmarked ? <IconBookmarkFilled size={20} /> : <IconBookmark size={20} />}
-        </ActionIcon>
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          component="a"
-          href={article.link}
-          target="_blank"
-          rel="noopener noreferrer"
+    <Box style={{ height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: tokens.background }}>
+      {/* Floating action bar (glassmorphic) */}
+      <Box style={{ padding: '16px 24px 0' }}>
+        <Box
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20,
+            padding: '10px 24px',
+            backgroundColor: `${tokens.surfaceContainerLow}CC`,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: `1px solid ${tokens.outlineVariant}`,
+            borderRadius: 999,
+          }}
         >
-          <IconExternalLink size={20} />
-        </ActionIcon>
+          <UnstyledButton
+            onClick={onBack}
+            style={{
+              fontSize: 13,
+              fontWeight: 500,
+              color: tokens.onSurfaceVariant,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <IconArrowLeft size={16} />
+            Back to feed
+          </UnstyledButton>
+
+          {/* Divider */}
+          <Box style={{ width: 1, height: 16, backgroundColor: tokens.outlineVariant }} />
+
+          <UnstyledButton
+            onClick={toggleBookmark}
+            style={{ color: bookmarked ? tokens.primary : tokens.onSurfaceVariant }}
+          >
+            {bookmarked ? <IconBookmarkFilled size={18} /> : <IconBookmark size={18} />}
+          </UnstyledButton>
+
+          <UnstyledButton
+            component="a"
+            href={article.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            style={{ color: tokens.onSurfaceVariant }}
+          >
+            <IconExternalLink size={18} />
+          </UnstyledButton>
+
+          <UnstyledButton
+            onClick={cycleFontSize}
+            style={{ color: fontScale !== 1.0 ? tokens.primary : tokens.onSurfaceVariant }}
+          >
+            <IconTextSize size={18} />
+          </UnstyledButton>
+        </Box>
       </Box>
 
-      <ScrollArea style={{ flex: 1 }}>
-        <Box p="md">
-          {article.imageUrls[0] && (
-            <Image
-              src={article.imageUrls[0]}
-              alt={article.title}
-              radius="lg"
-              mb="md"
-              h={300}
-              fit="cover"
-            />
-          )}
-          <Text size="xl" fw={700} c={tokens.textPrimary} mb="xs">
+      {/* Scrollable content */}
+      <Box style={{ flex: 1, overflow: 'auto', padding: '0 0 80px' }}>
+        <Box style={{ maxWidth: 720, margin: '0 auto', paddingTop: 32 }}>
+          {/* Metadata */}
+          <Box style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 24px 16px' }}>
+            <Box
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                color: tokens.onSurface,
+                backgroundColor: tokens.surfaceContainerHigh,
+                padding: '4px 10px',
+                borderRadius: 999,
+              }}
+            >
+              {feedTitle}
+            </Box>
+            <Text style={{ fontSize: 11, color: tokens.onSurfaceVariant }}>
+              ·
+            </Text>
+            <Text
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                color: tokens.onSurfaceVariant,
+              }}
+            >
+              {formattedDate}
+            </Text>
+          </Box>
+
+          {/* Headline */}
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
+              color: tokens.primary,
+              padding: '0 24px 24px',
+            }}
+          >
             {article.title}
           </Text>
-          <Text size="xs" c={tokens.textSecondary} mb="md">
-            {article.pubDate}
-          </Text>
-          <Text size="sm" c={tokens.textPrimary} style={{ lineHeight: 1.7 }}>
-            {article.description}
-          </Text>
+
+          {/* Hero image (grayscale) */}
+          {imageUrl && (
+            <Box style={{ padding: '0 24px 32px' }}>
+              <Box
+                style={{
+                  height: 300,
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  border: `1px solid ${tokens.outlineVariant}`,
+                }}
+              >
+                <img
+                  src={imageUrl}
+                  alt={article.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: 'saturate(0)',
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
+
+          {/* Article body */}
+          <Box style={{ padding: '0 24px 32px' }}>
+            <Text
+              style={{
+                fontSize: 20 * fontScale,
+                lineHeight: 1.8,
+                color: tokens.onSurface,
+              }}
+            >
+              {article.description}
+            </Text>
+          </Box>
+
+          {/* Divider */}
+          <Box style={{ margin: '0 24px', height: 1, backgroundColor: tokens.outlineVariant }} />
+
+          {/* Read full article link */}
+          <Box style={{ padding: '24px 24px' }}>
+            <UnstyledButton
+              component="a"
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+                color: tokens.primary,
+              }}
+            >
+              Read full article →
+            </UnstyledButton>
+          </Box>
         </Box>
-      </ScrollArea>
+      </Box>
     </Box>
   );
+}
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr.substring(0, 16);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return dateStr.substring(0, 16);
+  }
 }
