@@ -66,13 +66,122 @@ feeds-pwa/
 
 ### Feed Fetching (Proxy Fallback Chain)
 
-All RSS/Atom feeds are fetched client-side with a 3-tier proxy fallback (mirrors the native app):
+All RSS/Atom feeds are fetched client-side (`src/feed/fetcher.ts`). A direct fetch is attempted first — fastest when the feed sends CORS headers, and it fails instantly when it doesn't. If that fails, all proxy tiers are raced **in parallel** and the first response that validates as feed XML wins (the rest are aborted):
 
-1. **Direct fetch** — attempt the feed URL directly
+1. **Custom Cloudflare Worker** (optional, most reliable — see [setup guide below](#self-hosted-cors-proxy-setup-a-to-z-cloudflare-worker))
 2. **Netlify proxy** — `https://rss-proxy-api.netlify.app/.netlify/functions/fetch-xml?url=<encoded>`
-3. **Codetabs proxy** — `https://api.codetabs.com/v1/proxy/?quest=<encoded>`
+3. **AllOrigins (raw)** — `https://api.allorigins.win/raw?url=<encoded>`
+4. **Codetabs proxy** — `https://api.codetabs.com/v1/proxy/?quest=<encoded>`
+5. **AllOrigins (JSON)** — `https://api.allorigins.win/get?url=<encoded>`
 
-Each request has a 15-second `AbortController` timeout. Errors are typed (`network`, `parsing`, `unavailable`) and surfaced as user-safe messages.
+Each request has a 15-second `AbortController` timeout, and every response body is validated to look like RSS/Atom/RDF before being accepted — proxies sometimes return their own HTML error pages with a 200 status. Errors are typed (`network`, `parsing`, `unavailable`) and surfaced as user-safe messages.
+
+### Self-Hosted CORS Proxy Setup, A to Z (Cloudflare Worker)
+
+#### Why you need this
+
+Some feeds (e.g. `dailyinvestor.com`, intermittently `businesstech.co.za`) sit behind Cloudflare bot protection that blocks requests from datacenter IPs. Every public CORS proxy — and the Netlify proxy — runs on datacenter IPs, so those feeds fail no matter which tier is tried. Requests that originate from *inside* Cloudflare's own network pass these checks, which is exactly what a Cloudflare Worker gives you. The Worker source lives in this repo at [`proxy/cors-proxy-worker.js`](proxy/cors-proxy-worker.js) and is locked to this app's origin so it can't be abused as an open proxy.
+
+The free plan (100,000 requests/day) is orders of magnitude more than a feed reader needs. No credit card required.
+
+#### Step 1 — Create a Cloudflare account
+
+1. Go to [dash.cloudflare.com/sign-up](https://dash.cloudflare.com/sign-up) and sign up (email + password; no domain needed).
+2. Verify your email — Workers won't deploy from an unverified account.
+
+#### Step 2 — Create the Worker
+
+> The dashboard's "Hello World" starter flow shows a **read-only** code preview — the editor only becomes available after a Worker already exists, and the flow sometimes refuses to proceed at all. Use one of the two paths below instead; both use the config at [`proxy/wrangler.toml`](proxy/wrangler.toml), which tells Cloudflare the Worker's name (`feeds-proxy`) and entry file.
+
+**Option A: Wrangler CLI (recommended — fastest)**
+
+Wrangler is Cloudflare's **official, first-party CLI** for Workers — authored and maintained by Cloudflare, Inc., open source (Apache-2.0) at [cloudflare/workers-sdk](https://github.com/cloudflare/workers-sdk), published on npm as [`wrangler`](https://www.npmjs.com/package/wrangler).
+
+> **Do I need to install it?** No. `npx wrangler` downloads it on first use (to the npm cache) and runs it — nothing is added to this project's `package.json` and no global install is required. Only prerequisite: Node.js v18+, which this project already requires. If you find yourself redeploying the Worker often, a global `npm install -g wrangler` is optional, never necessary.
+
+```bash
+cd feeds-pwa/proxy
+npx wrangler login     # opens browser for Cloudflare OAuth
+npx wrangler deploy    # reads wrangler.toml, deploys cors-proxy-worker.js
+```
+
+On first deploy you'll be prompted to register your `workers.dev` subdomain if you don't have one. Wrangler prints the deployed URL when it finishes: `https://feeds-proxy.<your-subdomain>.workers.dev`.
+
+**Option B: Connect the GitHub repo (auto-deploys on push)**
+
+1. In the [Cloudflare dashboard](https://dash.cloudflare.com), go to **Workers & Pages** → **Create** → **Import a repository**.
+2. Authorize GitHub access and select the `feeds-pwa` repository.
+3. Set **root directory** to `proxy` and leave the deploy command as `npx wrangler deploy` — the bundled `wrangler.toml` supplies the name and entry file.
+4. Click **Save and Deploy**. From then on, every push touching `proxy/` redeploys the Worker automatically.
+5. The Worker URL appears on its overview page: `https://feeds-proxy.<your-subdomain>.workers.dev`.
+
+> **What's next once the Worker is deployed?** Deploying the Worker by itself changes nothing in the app — the two are linked by one constant. In order:
+>
+> 1. Copy your Worker URL from the wrangler output or the Worker's overview page.
+> 2. Sanity-check it from a terminal (Step 4 below).
+> 3. Paste it into `CUSTOM_PROXY` in [`src/feed/fetcher.ts`](src/feed/fetcher.ts), **with `?url=` appended** (Step 5).
+> 4. Rebuild and redeploy the PWA — the constant is baked in at build time (Step 6).
+> 5. Hard-refresh the deployed app so the service worker updates, then confirm the previously-failing feeds load (Step 7).
+
+#### Step 3 — Check the allowed origin
+
+The Worker only serves requests from this app's origin. If your PWA is hosted anywhere other than `https://tshego3.github.io`, edit this line in the Worker before deploying:
+
+```js
+const ALLOWED_ORIGIN = 'https://tshego3.github.io';
+```
+
+Note: the origin is the scheme + host only — no path, no trailing slash.
+
+#### Step 4 — Verify the Worker
+
+Test it from a terminal against a feed that public proxies can't reach:
+
+```bash
+curl -s -H "Origin: https://tshego3.github.io" \
+  "https://feeds-proxy.<your-subdomain>.workers.dev/?url=https%3A%2F%2Fdailyinvestor.com%2Ffeed%2F" | head -5
+```
+
+You should see RSS XML (`<?xml ...><rss ...`). If you get `Missing ?url= parameter`, the Worker is deployed and working — fix the URL encoding. If you get an HTML error page, see [Troubleshooting](#troubleshooting) below.
+
+#### Step 5 — Wire it into the app
+
+In [`src/feed/fetcher.ts`](src/feed/fetcher.ts), set `CUSTOM_PROXY` to your Worker URL **ending in `?url=`**:
+
+```ts
+const CUSTOM_PROXY = 'https://feeds-proxy.<your-subdomain>.workers.dev/?url=';
+```
+
+When set, the Worker becomes the first proxy tier raced after a failed direct fetch. When left as an empty string, the tier is skipped entirely — the app works without it, just less reliably.
+
+#### Step 6 — Rebuild and deploy the PWA
+
+```bash
+npm run build
+npx gh-pages -d dist
+```
+
+#### Step 7 — Confirm end-to-end
+
+1. Open the deployed app and hard-refresh (the service worker also bundles the fetcher — a stale SW will keep using the old proxy list until it updates).
+2. Open DevTools → Network, refresh the feeds, and look for requests to `feeds-proxy.<your-subdomain>.workers.dev` returning 200.
+3. Previously-failing feeds (dailyinvestor, businesstech) should now populate.
+
+#### Troubleshooting
+
+| Symptom | Cause / fix |
+|---------|-------------|
+| `403 Forbidden` from the Worker | The request's `Origin` doesn't match `ALLOWED_ORIGIN`. Check scheme/host exactly (no trailing slash). |
+| `400 Missing ?url= parameter` | `CUSTOM_PROXY` doesn't end in `?url=`, or the feed URL wasn't appended encoded. |
+| Worker returns upstream HTML ("Just a moment...") | The target site is running Cloudflare's *JavaScript challenge*, which no proxy can pass. Rare for RSS endpoints; nothing to do but drop the feed. |
+| Worked in `curl` but not in the app | Stale service worker — in DevTools → Application → Service Workers, click "Update"/"skipWaiting", or bump the app version and redeploy. |
+| `Error 1101` / Worker exception | Open the Worker in the dashboard → **Logs** → **Begin log stream**, reproduce, and read the exception. |
+
+#### Limits & cost
+
+- **Free plan**: 100,000 requests/day, 10 ms CPU per request (a proxy fetch uses almost none — the time is spent waiting on the upstream, which doesn't count).
+- Responses are edge-cached for 5 minutes (`cacheTtl: 300`), so repeated refreshes of the same feed often don't hit the origin at all.
+- If the daily limit is ever exceeded, the Worker returns errors until midnight UTC — the app degrades gracefully to the public proxy tiers.
 
 ### Data Layer (IndexedDB)
 

@@ -1,12 +1,10 @@
 /// <reference lib="webworker" />
 
 import { precacheAndRoute } from 'workbox-precaching';
+import { fetchFeedXml } from './feed/fetcher';
 
 declare const self: ServiceWorkerGlobalScope;
 
-const NETLIFY_PROXY = 'https://rss-proxy-api.netlify.app/.netlify/functions/fetch-xml?url=';
-const CODETABS_PROXY = 'https://api.codetabs.com/v1/proxy/?quest=';
-const TIMEOUT_MS = 15_000;
 const DB_NAME = 'feeds-db';
 const DB_VERSION = 1;
 
@@ -86,7 +84,7 @@ async function backgroundRefreshFeeds(): Promise<void> {
 
   for (const feed of subscriptions) {
     try {
-      const xml = await fetchFeedXmlSw(feed.url);
+      const xml = await fetchFeedXml(feed.url);
       const articles = parseRssXmlSw(xml, feed.id);
       const newCount = await cacheNewArticles(feed.id, articles);
       totalNewArticles += newCount;
@@ -98,24 +96,6 @@ async function backgroundRefreshFeeds(): Promise<void> {
   if (totalNewArticles > 0) {
     await showNewArticlesNotification(totalNewArticles);
   }
-}
-
-async function fetchFeedXmlSw(feedUrl: string): Promise<string> {
-  const encoded = encodeURIComponent(feedUrl);
-  const tiers = [feedUrl, `${NETLIFY_PROXY}${encoded}`, `${CODETABS_PROXY}${encoded}`];
-
-  for (const url of tiers) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
-      const res = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) return res.text();
-    } catch {
-      // try next tier
-    }
-  }
-  throw new Error('All tiers failed');
 }
 
 function parseRssXmlSw(xml: string, feedId: number): Array<{ feedId: number; link: string; title: string }> {
