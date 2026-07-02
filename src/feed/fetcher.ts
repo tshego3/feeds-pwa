@@ -4,7 +4,7 @@ import type { FeedError } from '../types';
 // Worker is the only tier that reliably reaches feeds whose Cloudflare
 // protection blocks datacenter IPs (e.g. dailyinvestor.com). Set to the
 // deployed Worker URL ending in `?url=` to enable it as the first proxy tier.
-const CUSTOM_PROXY = '';
+const CUSTOM_PROXY = 'https://feeds-proxy.feeds-pwa.workers.dev/?url=';
 
 const TIMEOUT_MS = 15_000;
 
