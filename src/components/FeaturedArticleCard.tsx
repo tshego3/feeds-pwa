@@ -24,10 +24,13 @@ export function FeaturedArticleCard({
       onClick={() => onSelect(article)}
       style={{
         position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
         overflow: 'hidden',
         borderRadius: 16,
         border: `1px solid ${tokens.outlineVariant}`,
-        height: imageUrl ? 380 : 200,
+        minHeight: imageUrl ? 380 : 200,
         cursor: 'pointer',
         maxWidth: 720,
       }}
@@ -71,10 +74,7 @@ export function FeaturedArticleCard({
       {/* Content overlay */}
       <Box
         style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
+          position: 'relative',
           padding: 24,
           display: 'flex',
           flexDirection: 'column',

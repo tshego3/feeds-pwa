@@ -9,7 +9,8 @@ Offline-capable RSS feed reader built as a pure Progressive Web App. Web port of
 - **Storage**: IndexedDB via `idb` wrapper (subscriptions, cached articles, bookmarks)
 - **Feed Parsing**: DOMParser (RSS 2.0, Atom, media:content/thumbnail)
 - **Icons**: @tabler/icons-react
-- **PWA**: Service Worker (Workbox cache-first), Web App Manifest
+- **PWA**: Service Worker (Workbox cache-first), Web App Manifest, Web Push notifications
+- **Backend (minimal)**: two self-hosted Cloudflare Workers — CORS proxy (`proxy/`) and push sender (`push-worker/`, KV + cron)
 - **Design System**: Monolithic Clarity dark theme (matches native app)
 - **Testing**: Vitest
 - **Linting**: ESLint + typescript-eslint
@@ -50,11 +51,15 @@ feeds-pwa/
     theme/                 # Mantine theme override (Monolithic Clarity tokens)
     components/            # FeaturedArticleCard, ArticleCard, CompactArticleRow, FeedSidebar, NewArticlesBanner, StateViews
     screens/               # Dashboard, ArticleReading, Search, Bookmarks, Settings
-    hooks/                 # useRouter, usePullToRefresh, useAutoRefresh
-    sw.ts                  # Service Worker (Workbox precaching + article cache)
+    hooks/                 # useRouter, usePullToRefresh, useAutoRefresh, useScrollRestoration
+    notifications/         # In-app notifications + Web Push subscription client
+    preferences.ts         # localStorage-backed user preferences
+    sw.ts                  # Service Worker (Workbox precaching + article cache + push handler)
     App.tsx                # AppShell with responsive nav (bottom tabs / sidebar)
     main.tsx               # Entry point with MantineProvider + SW registration
     global.css             # Reduced-motion + base resets
+  proxy/                   # Cloudflare Worker: CORS proxy for feed fetching
+  push-worker/             # Cloudflare Worker: Web Push subscriptions + cron sender
   index.html
   vite.config.ts           # base: '/feeds-pwa/' for GitHub Pages
   tsconfig.json            # strict: true
@@ -64,17 +69,23 @@ feeds-pwa/
 
 ## Architecture
 
-### Feed Fetching (Proxy Fallback Chain)
+### Feed Fetching (Cloudflare Proxy First)
 
-All RSS/Atom feeds are fetched client-side (`src/feed/fetcher.ts`). A direct fetch is attempted first — fastest when the feed sends CORS headers, and it fails instantly when it doesn't. If that fails, all proxy tiers are raced **in parallel** and the first response that validates as feed XML wins (the rest are aborted):
+All RSS/Atom feeds are fetched client-side (`src/feed/fetcher.ts`, shared helpers in `src/feed/proxy.ts`):
 
-1. **Custom Cloudflare Worker** (optional, most reliable — see [setup guide below](#self-hosted-cors-proxy-setup-a-to-z-cloudflare-worker))
-2. **Netlify proxy** — `https://rss-proxy-api.netlify.app/.netlify/functions/fetch-xml?url=<encoded>`
-3. **AllOrigins (raw)** — `https://api.allorigins.win/raw?url=<encoded>`
-4. **Codetabs proxy** — `https://api.codetabs.com/v1/proxy/?quest=<encoded>`
-5. **AllOrigins (JSON)** — `https://api.allorigins.win/get?url=<encoded>`
+1. **Tier 1 — self-hosted Cloudflare Worker proxy** (`proxy/cors-proxy-worker.js`, deployed as `feeds-proxy`). Requests from inside Cloudflare's network pass the bot checks that block every public proxy on Cloudflare-protected feeds, and responses are edge-cached for 5 minutes. See the [setup guide below](#self-hosted-cors-proxy-setup-a-to-z-cloudflare-worker).
+2. **Tier 2 — direct fetch** (fallback). Works when the feed itself sends CORS headers; covers the case where the Worker is unreachable or over quota.
 
-Each request has a 15-second `AbortController` timeout, and every response body is validated to look like RSS/Atom/RDF before being accepted — proxies sometimes return their own HTML error pages with a 200 status. Errors are typed (`network`, `parsing`, `unavailable`) and surfaced as user-safe messages.
+The old public proxy tiers (Netlify, AllOrigins, Codetabs) were removed deliberately — they were intermittently blocked by Cloudflare on several South African feeds, and the Worker supersedes them. Kept here for safekeeping in case a fallback tier ever needs to be restored in `src/feed/fetcher.ts`:
+
+- **Netlify proxy** — `https://rss-proxy-api.netlify.app/.netlify/functions/fetch-xml?url=<encoded>`
+- **AllOrigins (raw)** — `https://api.allorigins.win/raw?url=<encoded>`
+- **Codetabs proxy** — `https://api.codetabs.com/v1/proxy/?quest=<encoded>`
+- **AllOrigins (JSON)** — `https://api.allorigins.win/get?url=<encoded>` (returns `{ contents }` JSON, needs unwrapping)
+
+The same proxy-first strategy is used for `og:image` resolution (`src/feed/opengraph.ts`). Each request has a 15-second `AbortController` timeout, and every response body is validated to look like RSS/Atom/RDF before being accepted — proxies sometimes return their own HTML error pages with a 200 status. Errors are typed (`network`, `parsing`, `unavailable`) and surfaced as user-safe messages.
+
+> **Local development note:** the Worker allows the production origin plus `http://localhost:*` / `http://127.0.0.1:*`, so the full proxy chain works in dev too. Any other origin gets a 403 — the Worker is not an open proxy.
 
 ### Self-Hosted CORS Proxy Setup, A to Z (Cloudflare Worker)
 
@@ -146,13 +157,13 @@ You should see RSS XML (`<?xml ...><rss ...`). If you get `Missing ?url= paramet
 
 #### Step 5 — Wire it into the app
 
-In [`src/feed/fetcher.ts`](src/feed/fetcher.ts), set `CUSTOM_PROXY` to your Worker URL **ending in `?url=`**:
+In [`src/feed/proxy.ts`](src/feed/proxy.ts), set `CUSTOM_PROXY` to your Worker URL **ending in `?url=`**:
 
 ```ts
 const CUSTOM_PROXY = 'https://feeds-proxy.<your-subdomain>.workers.dev/?url=';
 ```
 
-When set, the Worker becomes the first proxy tier raced after a failed direct fetch. When left as an empty string, the tier is skipped entirely — the app works without it, just less reliably.
+The Worker is the first tier tried for every feed fetch; a direct fetch is the fallback when it fails.
 
 #### Step 6 — Rebuild and deploy the PWA
 
@@ -181,16 +192,114 @@ npx gh-pages -d dist
 
 - **Free plan**: 100,000 requests/day, 10 ms CPU per request (a proxy fetch uses almost none — the time is spent waiting on the upstream, which doesn't count).
 - Responses are edge-cached for 5 minutes (`cacheTtl: 300`), so repeated refreshes of the same feed often don't hit the origin at all.
-- If the daily limit is ever exceeded, the Worker returns errors until midnight UTC — the app degrades gracefully to the public proxy tiers.
+- If the daily limit is ever exceeded, the Worker returns errors until midnight UTC — the app degrades gracefully to direct fetches (feeds with CORS headers keep working).
+
+### Web Push Notifications Setup, A to Z (Cloudflare Worker)
+
+#### Why you need this
+
+Notifications fired by the app itself only work while the app is open. Real notifications — device locked, app closed — require **Web Push**: the browser's push service wakes the service worker, which shows the notification. That needs a server to hold push subscriptions and send [VAPID](https://datatracker.ietf.org/doc/html/rfc8292)-signed pushes. The Worker at [`push-worker/push-worker.js`](push-worker/push-worker.js) is that server, on the same free Cloudflare plan as the CORS proxy.
+
+**How it works:**
+
+1. When you enable "New Article Notifications" in Settings, the app subscribes with the browser's push service and POSTs the subscription plus your feed list to the Worker, which stores them in a KV namespace.
+2. Every 15 minutes (cron trigger) the Worker fetches each subscriber's feeds and compares the latest article link against what it saw last time.
+3. When something is new, it sends a **payload-free** push (no message encryption needed — only a VAPID JWT). The PWA's service worker wakes up, fetches the feeds itself, caches the new articles, and shows a notification with real counts.
+
+> **iOS note:** Web Push on iPhone/iPad requires iOS 16.4+ **and** the PWA installed to the Home Screen (Share → Add to Home Screen). It does not work in a regular Safari tab.
+
+#### Step 1 — Generate VAPID keys
+
+VAPID is a keypair that proves pushes come from your server. Generate one with Node (no packages needed):
+
+```bash
+node -e "
+const { generateKeyPairSync } = require('crypto');
+const { publicKey, privateKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+const pub = publicKey.export({ format: 'jwk' });
+const b64 = (s) => Buffer.from(s, 'base64url');
+console.log('PUBLIC :', Buffer.concat([Buffer.from([4]), b64(pub.x), b64(pub.y)]).toString('base64url'));
+console.log('PRIVATE:', JSON.stringify(privateKey.export({ format: 'jwk' })));
+"
+```
+
+- **PUBLIC** goes in two places (they must match): `VAPID_PUBLIC_KEY` in [`push-worker/wrangler.toml`](push-worker/wrangler.toml) and `VAPID_PUBLIC_KEY` in [`src/notifications/push.ts`](src/notifications/push.ts).
+- **PRIVATE** is a secret — it never goes in a file in the repo. You'll upload it in Step 4.
+
+Also set `VAPID_SUBJECT` in `wrangler.toml` to a `mailto:` address you own (push services use it to contact you about problems).
+
+#### Step 2 — Create the KV namespace
+
+The Worker stores subscriptions in Workers KV:
+
+```bash
+cd feeds-pwa/push-worker
+npx wrangler kv namespace create SUBS
+```
+
+Paste the printed `id` into the `[[kv_namespaces]]` block in `wrangler.toml`.
+
+#### Step 3 — Deploy the Worker
+
+```bash
+npx wrangler deploy
+```
+
+This registers the 15-minute cron trigger automatically (from `[triggers]` in `wrangler.toml`). The Worker URL will be `https://feeds-push.<your-subdomain>.workers.dev`.
+
+#### Step 4 — Upload the private key as a secret
+
+```bash
+npx wrangler secret put VAPID_PRIVATE_JWK
+# paste the PRIVATE JSON from Step 1 when prompted
+```
+
+#### Step 5 — Wire the client
+
+In [`src/notifications/push.ts`](src/notifications/push.ts):
+
+```ts
+const PUSH_WORKER_URL = 'https://feeds-push.<your-subdomain>.workers.dev';
+const VAPID_PUBLIC_KEY = '<PUBLIC key from Step 1>';
+```
+
+As with the CORS proxy, the Worker accepts requests from the app's origin plus `http://localhost:*` / `http://127.0.0.1:*` for development — if you host anywhere other than `https://tshego3.github.io`, update `ALLOWED_ORIGIN` in `push-worker.js` too.
+
+#### Step 6 — Rebuild, deploy, and enable
+
+1. `npm run build` and deploy the PWA (the service worker's push handler ships inside `sw.js`).
+2. Open the deployed app (on iOS: install to Home Screen first), go to **Settings → New Article Notifications**, and enable it. Grant the permission prompt.
+3. Verify server-side that the subscription arrived:
+
+```bash
+npx wrangler kv key list --binding SUBS --remote
+```
+
+You should see one key (a hash of your device's push endpoint). From now on, when any of your feeds publishes a new article, the next cron tick pushes to your device — locked or not.
+
+#### Troubleshooting
+
+| Symptom | Cause / fix |
+|---------|-------------|
+| Toggle enables but no KV key appears | The subscribe POST failed — check the browser console; verify `PUSH_WORKER_URL` and that `ALLOWED_ORIGIN` matches your deploy origin. |
+| Notifications work in foreground but never when closed | The push subscription isn't active — on iOS confirm the app is installed to the Home Screen; on desktop check the site's notification permission isn't "ask". |
+| Pushes stop after changing keys | Client and Worker keys diverged. Both `VAPID_PUBLIC_KEY` locations must hold the same value, and the private secret must be from the same pair. Re-enable notifications to re-subscribe. |
+| `400 Invalid subscription payload` | Feed list exceeds the Worker's `MAX_FEEDS_PER_SUB` (200) — raise it, or trim feeds. |
+| Cron never fires | Check the Worker's dashboard → Settings → Triggers shows the cron; free-tier cron requires the Worker to have been deployed with `[triggers]` present. |
+
+#### Limits & cost
+
+- Free plan: 100,000 Worker requests/day and 1,000 KV writes/day — a personal feed reader uses a tiny fraction (cron runs 96×/day; KV writes only happen when a feed has something new).
+- Pushes carry no payload, so no push-message encryption keys are stored server-side; the KV record holds only the push endpoint, your feed URLs, and the last-seen article link per feed.
 
 ### Data Layer (IndexedDB)
 
-Database: `feeds-db` with three object stores:
+Database: `feeds-db` (version 2) with three object stores:
 
 | Store | Key | Purpose |
 |-------|-----|---------|
 | `subscriptions` | `id` (autoIncrement) | Feed subscription records (title, url, groupId, sortOrder, suppressHeroImage) |
-| `articles` | `[feedId, link]` | Cached feed items per subscription |
+| `articles` | `[feedId, link]` (+ `by-cached-at` index) | Cached feed items per subscription; records older than 7 days are pruned on startup (bookmarks are never pruned) |
 | `bookmarks` | `link` | Saved articles for offline reading |
 
 ### UI Layout
@@ -225,7 +334,9 @@ npm run build
 npx gh-pages -d dist
 ```
 
-In GitHub repo Settings > Pages, set source to the `gh-pages` branch.
+In GitHub repo Settings > Pages, set source to the `gh-pages` branch. Run `npm run build` first so `gh-pages` publishes the current build.
+
+The two Cloudflare Workers deploy separately with `npx wrangler deploy` from `proxy/` and `push-worker/` (see the setup guides above).
 
 ## Design Tokens
 

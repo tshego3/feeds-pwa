@@ -1,3 +1,5 @@
+import { getBoolPref, setBoolPref } from '../preferences';
+
 const PERMISSION_KEY = 'feeds-notifications-enabled';
 
 export function isNotificationSupported(): boolean {
@@ -5,11 +7,13 @@ export function isNotificationSupported(): boolean {
 }
 
 export function getNotificationPreference(): boolean {
-  return localStorage.getItem(PERMISSION_KEY) === 'true';
+  // Default on: the app asks for permission on first launch and starts
+  // notifying as soon as the user grants it.
+  return getBoolPref(PERMISSION_KEY, true);
 }
 
 export function setNotificationPreference(enabled: boolean): void {
-  localStorage.setItem(PERMISSION_KEY, enabled ? 'true' : 'false');
+  setBoolPref(PERMISSION_KEY, enabled);
 }
 
 export async function requestNotificationPermission(): Promise<boolean> {

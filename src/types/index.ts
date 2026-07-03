@@ -20,6 +20,8 @@ export interface FeedItem {
   readonly description: string;
   readonly pubDate: string;
   readonly imageUrls: readonly string[];
+  /** Epoch ms when the record was cached; stamped by the db layer on write. */
+  readonly cachedAt?: number;
 }
 
 export interface SavedArticle {

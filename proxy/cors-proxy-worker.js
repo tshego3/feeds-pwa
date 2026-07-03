@@ -15,6 +15,17 @@
 
 const ALLOWED_ORIGIN = 'https://tshego3.github.io';
 
+// The production origin plus local dev servers (vite on any port).
+function isAllowedOrigin(origin) {
+  if (origin === ALLOWED_ORIGIN) return true;
+  try {
+    const { protocol, hostname } = new URL(origin);
+    return protocol === 'http:' && (hostname === 'localhost' || hostname === '127.0.0.1');
+  } catch {
+    return false;
+  }
+}
+
 export default {
   async fetch(request) {
     const targetParam = new URL(request.url).searchParams.get('url');
@@ -32,9 +43,10 @@ export default {
       return new Response('Invalid url scheme', { status: 400 });
     }
 
-    // Only serve the PWA — keeps the worker from being abused as an open proxy.
+    // Only serve the PWA (and local dev) — keeps the worker from being
+    // abused as an open proxy.
     const origin = request.headers.get('Origin');
-    if (origin && origin !== ALLOWED_ORIGIN) {
+    if (origin && !isAllowedOrigin(origin)) {
       return new Response('Forbidden', { status: 403 });
     }
 
@@ -51,7 +63,10 @@ export default {
       status: upstream.status,
       headers: {
         'Content-Type': upstream.headers.get('Content-Type') ?? 'application/xml; charset=utf-8',
-        'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
+        // Echo the (validated) requesting origin so localhost dev works too;
+        // Vary keeps caches from serving one origin's ACAO to another.
+        'Access-Control-Allow-Origin': origin && isAllowedOrigin(origin) ? origin : ALLOWED_ORIGIN,
+        Vary: 'Origin',
         'Cache-Control': 'public, max-age=300',
       },
     });

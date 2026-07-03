@@ -6,7 +6,6 @@ import { fetchFeedXml } from './feed/fetcher';
 declare const self: ServiceWorkerGlobalScope;
 
 const DB_NAME = 'feeds-db';
-const DB_VERSION = 1;
 
 // Workbox injects the precache manifest at build time
 precacheAndRoute(self.__WB_MANIFEST);
@@ -59,7 +58,30 @@ self.addEventListener('periodicsync', (event: Event) => {
   }
 });
 
-// Also handle push events to wake from push (future enhancement placeholder)
+// Web Push — the push worker sends a payload-free push when a subscribed feed
+// has a new article; this wakes the SW even when the app is closed or the
+// device is locked. Fetch the feeds here and show the real notification.
+// The subscription is userVisibleOnly, so a notification MUST be shown for
+// every push — repeated silent pushes get the subscription revoked. When the
+// refresh finds nothing new (app already cached it, or fetches failed), show
+// a generic notice: the worker only pushes when it detected a new article.
+self.addEventListener('push', (event) => {
+  event.waitUntil(
+    backgroundRefreshFeeds().then((totalNewArticles) => {
+      if (totalNewArticles === 0) {
+        return self.registration.showNotification('feeds', {
+          body: 'New articles available',
+          icon: '/feeds-pwa/favicon.svg',
+          badge: '/feeds-pwa/favicon.svg',
+          tag: 'new-articles',
+          data: { url: '/feeds-pwa/' },
+        } as NotificationOptions);
+      }
+      return undefined;
+    }),
+  );
+});
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
@@ -76,9 +98,9 @@ self.addEventListener('notificationclick', (event) => {
 
 // --- Background refresh logic ---
 
-async function backgroundRefreshFeeds(): Promise<void> {
+async function backgroundRefreshFeeds(): Promise<number> {
   const subscriptions = await getSubscriptionsFromDb();
-  if (subscriptions.length === 0) return;
+  if (subscriptions.length === 0) return 0;
 
   let totalNewArticles = 0;
 
@@ -96,6 +118,7 @@ async function backgroundRefreshFeeds(): Promise<void> {
   if (totalNewArticles > 0) {
     await showNewArticlesNotification(totalNewArticles);
   }
+  return totalNewArticles;
 }
 
 function parseRssXmlSw(xml: string, feedId: number): Array<{ feedId: number; link: string; title: string }> {
@@ -124,21 +147,32 @@ function parseRssXmlSw(xml: string, feedId: number): Array<{ feedId: number; lin
 
 async function getSubscriptionsFromDb(): Promise<Array<{ id: number; url: string; title: string }>> {
   return new Promise((resolve) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(DB_NAME);
     request.onerror = () => resolve([]);
+    // The app hasn't created the DB yet — abort so this versionless open
+    // doesn't create an empty v1 database the app would then have to upgrade.
+    request.onupgradeneeded = () => {
+      request.transaction?.abort();
+      resolve([]);
+    };
     request.onsuccess = () => {
       const db = request.result;
+      // Never hold the app's schema upgrade hostage: close when asked, and
+      // close as soon as the read completes.
+      db.onversionchange = () => db.close();
       try {
         const tx = db.transaction('subscriptions', 'readonly');
         const store = tx.objectStore('subscriptions');
         const getAll = store.getAll();
         getAll.onsuccess = () => resolve(getAll.result ?? []);
         getAll.onerror = () => resolve([]);
+        tx.oncomplete = () => db.close();
+        tx.onabort = () => db.close();
       } catch {
+        db.close();
         resolve([]);
       }
     };
-    request.onupgradeneeded = () => resolve([]);
   });
 }
 
@@ -147,12 +181,19 @@ async function cacheNewArticles(
   articles: Array<{ feedId: number; link: string; title: string }>,
 ): Promise<number> {
   return new Promise((resolve) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(DB_NAME);
     request.onerror = () => resolve(0);
+    request.onupgradeneeded = () => {
+      request.transaction?.abort();
+      resolve(0);
+    };
     request.onsuccess = () => {
       const db = request.result;
+      db.onversionchange = () => db.close();
       try {
         const tx = db.transaction('articles', 'readwrite');
+        tx.oncomplete = () => db.close();
+        tx.onabort = () => db.close();
         const store = tx.objectStore('articles');
         let newCount = 0;
         let pending = articles.length;
@@ -165,7 +206,14 @@ async function cacheNewArticles(
           check.onsuccess = () => {
             if (!check.result) {
               // New article — store minimal record
-              store.put({ ...article, id: btoa(article.link).slice(0, 16), description: '', pubDate: '', imageUrls: [] });
+              store.put({
+                ...article,
+                id: btoa(article.link).slice(0, 16),
+                description: '',
+                pubDate: '',
+                imageUrls: [],
+                cachedAt: Date.now(),
+              });
               newCount++;
             }
             pending--;
@@ -177,6 +225,7 @@ async function cacheNewArticles(
           };
         }
       } catch {
+        db.close();
         resolve(0);
       }
     };

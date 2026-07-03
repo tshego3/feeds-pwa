@@ -10,15 +10,34 @@ import {
   setNotificationPreference,
   requestNotificationPermission,
 } from '../notifications';
+import { subscribeToPush, unsubscribeFromPush } from '../notifications/push';
 
 type SettingsView = 'main' | 'manage-feeds' | 'add-feed';
 
-export function SettingsScreen() {
+interface SettingsScreenProps {
+  readonly autoRefreshEnabled: boolean;
+  readonly onToggleAutoRefresh: (enabled: boolean) => void;
+  readonly showImages: boolean;
+  readonly onToggleShowImages: (enabled: boolean) => void;
+}
+
+export function SettingsScreen({
+  autoRefreshEnabled,
+  onToggleAutoRefresh,
+  showImages,
+  onToggleShowImages,
+}: SettingsScreenProps) {
   const [view, setView] = useState<SettingsView>('main');
   const [feeds, setFeeds] = useState<RssFeedModel[]>([]);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [showImages, setShowImages] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(() => getNotificationPreference());
+  // The toggle reflects the effective state: preference AND granted browser
+  // permission. With the preference defaulting to on, showing it enabled
+  // before permission is granted would be misleading.
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    () =>
+      isNotificationSupported() &&
+      getNotificationPreference() &&
+      Notification.permission === 'granted',
+  );
   const notificationsSupported = isNotificationSupported();
 
   useEffect(() => {
@@ -71,15 +90,15 @@ export function SettingsScreen() {
           <ToggleRow
             title="Auto-Refresh Feeds"
             subtitle="Refresh every 15 minutes"
-            value={autoRefresh}
-            onChange={setAutoRefresh}
+            value={autoRefreshEnabled}
+            onChange={onToggleAutoRefresh}
           />
           <Divider />
           <ToggleRow
             title="Show Preview Images"
             subtitle="Display article thumbnails"
             value={showImages}
-            onChange={setShowImages}
+            onChange={onToggleShowImages}
           />
           {notificationsSupported && (
             <>
@@ -93,9 +112,15 @@ export function SettingsScreen() {
                     const granted = await requestNotificationPermission();
                     setNotificationsEnabled(granted);
                     setNotificationPreference(granted);
+                    if (granted) {
+                      // Push subscription lets notifications fire while the
+                      // app is closed or the device is locked
+                      await subscribeToPush(feeds.map((f) => f.url));
+                    }
                   } else {
                     setNotificationsEnabled(false);
                     setNotificationPreference(false);
+                    await unsubscribeFromPush();
                   }
                 }}
               />

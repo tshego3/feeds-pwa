@@ -1,6 +1,6 @@
 import { Box, Text, UnstyledButton } from '@mantine/core';
-import { IconArrowLeft, IconBookmark, IconBookmarkFilled, IconExternalLink, IconTextSize } from '@tabler/icons-react';
-import { useState, useEffect } from 'react';
+import { IconArrowLeft, IconBookmark, IconBookmarkFilled, IconExternalLink, IconTextSize, IconX } from '@tabler/icons-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
 import { isBookmarked, addBookmark, removeBookmark } from '../db';
@@ -16,11 +16,33 @@ const FONT_SCALES = [1.0, 1.2, 1.4] as const;
 export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingProps) {
   const [bookmarked, setBookmarked] = useState(false);
   const [fontScaleIndex, setFontScaleIndex] = useState(0);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const fontScale = FONT_SCALES[fontScaleIndex] ?? 1.0;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef(0);
 
   useEffect(() => {
     isBookmarked(article.link).then(setBookmarked);
   }, [article.link]);
+
+  // Scroll fires many times per second — write the progress straight to the
+  // bar's transform (composited, no layout) at most once per frame instead of
+  // re-rendering the whole article on every event.
+  const onScroll = useCallback(() => {
+    if (rafId.current) return;
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = 0;
+      const el = scrollRef.current;
+      const bar = progressRef.current;
+      if (!el || !bar) return;
+      const max = el.scrollHeight - el.clientHeight;
+      const progress = max > 0 ? Math.min(1, Math.max(0, el.scrollTop / max)) : 0;
+      bar.style.transform = `scaleX(${progress})`;
+    });
+  }, []);
+
+  useEffect(() => () => cancelAnimationFrame(rafId.current), []);
 
   async function toggleBookmark() {
     if (bookmarked) {
@@ -108,8 +130,25 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
         </Box>
       </Box>
 
+      {/* Reading progress bar */}
+      <Box style={{ height: 2, backgroundColor: tokens.outlineVariant }}>
+        <Box
+          ref={progressRef}
+          style={{
+            height: '100%',
+            backgroundColor: tokens.primary,
+            transform: 'scaleX(0)',
+            transformOrigin: 'left',
+          }}
+        />
+      </Box>
+
       {/* Scrollable content */}
-      <Box style={{ flex: 1, overflow: 'auto', padding: '0 0 80px' }}>
+      <Box
+        ref={scrollRef}
+        onScroll={onScroll}
+        style={{ flex: 1, overflow: 'auto', padding: '0 0 80px' }}
+      >
         <Box style={{ maxWidth: 720, margin: '0 auto', paddingTop: 32 }}>
           {/* Metadata */}
           <Box style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 24px 16px' }}>
@@ -155,15 +194,17 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
             {article.title}
           </Text>
 
-          {/* Hero image (grayscale) */}
+          {/* Hero image (full color; tap to open viewer) */}
           {imageUrl && (
             <Box style={{ padding: '0 24px 32px' }}>
               <Box
+                onClick={() => setViewerOpen(true)}
                 style={{
                   height: 300,
                   borderRadius: 12,
                   overflow: 'hidden',
                   border: `1px solid ${tokens.outlineVariant}`,
+                  cursor: 'zoom-in',
                 }}
               >
                 <img
@@ -173,7 +214,6 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    filter: 'saturate(0)',
                   }}
                 />
               </Box>
@@ -214,6 +254,49 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
           </Box>
         </Box>
       </Box>
+
+      {/* Fullscreen image viewer */}
+      {viewerOpen && imageUrl && (
+        <Box
+          onClick={() => setViewerOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 300,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: tokens.background,
+            cursor: 'zoom-out',
+          }}
+        >
+          <img
+            src={imageUrl}
+            alt={article.title}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+            }}
+          />
+          <UnstyledButton
+            onClick={() => setViewerOpen(false)}
+            aria-label="Close image viewer"
+            style={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              padding: 10,
+              borderRadius: 999,
+              backgroundColor: `${tokens.surfaceContainerLow}CC`,
+              color: tokens.primary,
+              display: 'flex',
+            }}
+          >
+            <IconX size={20} />
+          </UnstyledButton>
+        </Box>
+      )}
     </Box>
   );
 }

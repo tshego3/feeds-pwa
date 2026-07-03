@@ -1,0 +1,15 @@
+name = "feeds-push"
+main = "push-worker.js"
+compatibility_date = "2026-07-01"
+workers_dev = true
+
+[vars]
+VAPID_PUBLIC_KEY = "BEFwvDvsqGKvy-HyUHw-RFEgzb4XIyS_ddTpCbEsmmvek3vMM1TpFSW4rZnHZZu8cHa4C1pcPXM3f8Ntmr4GY4k"
+VAPID_SUBJECT = "mailto:systems@eoifilms.co.za"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[kv_namespaces]]
+binding = "SUBS"
+id = "b098a272162843dfb4e89e3e17bb0154"

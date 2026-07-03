@@ -17,8 +17,8 @@ These rules are mandatory for all feature work, bug fixes, and refactors.
 
 ## Non-Negotiable Architecture Rules
 
-1. No server-side code - no Express, no Node server, no SSR runtime. The only network calls are to RSS feed URLs via CORS proxies.
-2. No remote database connections or ORM usage. IndexedDB is the sole local data layer.
+1. No app server - no Express, no Node server, no SSR runtime. The PWA itself is static (GitHub Pages). The only backend is two small self-hosted Cloudflare Workers: `proxy/` (CORS proxy for feed fetching) and `push-worker/` (Web Push subscriptions + cron sender) - do not add server logic beyond those two, and keep them dependency-free single files.
+2. No remote database for app data. IndexedDB is the sole data layer for subscriptions/articles/bookmarks; the push worker's KV namespace stores only push subscriptions and per-feed lastSeen dedup state, never article content.
 3. No authentication flows requiring a backend.
 4. Keep modules small and focused - one concern per file.
 5. Shared types and interfaces live in `src/types/`. Never create model types outside it; no inline duplication.

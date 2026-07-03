@@ -4,7 +4,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconHome, IconSearch, IconBookmark, IconSettings, IconMenu2 } from '@tabler/icons-react';
 import type { RssFeedModel, FeedMenuItem, FeedItem, AppScreen } from './types';
 import { tokens } from './theme';
-import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed } from './db';
+import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed, pruneExpiredArticles } from './db';
 import { fetchFeedXml, parseRssXml } from './feed';
 import { FeedSidebar } from './components/FeedSidebar';
 import { Dashboard } from './screens/Dashboard';
@@ -16,7 +16,22 @@ import { NewArticlesBanner } from './components/NewArticlesBanner';
 import { useRouter } from './hooks/useRouter';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { useAutoRefresh } from './hooks/useAutoRefresh';
-import { showNewArticlesNotification } from './notifications';
+import { useScrollRestoration } from './hooks/useScrollRestoration';
+import {
+  showNewArticlesNotification,
+  getNotificationPreference,
+  isNotificationSupported,
+  requestNotificationPermission,
+} from './notifications';
+import { subscribeToPush } from './notifications/push';
+import {
+  getAutoRefreshPreference,
+  setAutoRefreshPreference,
+  getShowImagesPreference,
+  setShowImagesPreference,
+  getLastFeedId,
+  setLastFeedId,
+} from './preferences';
 
 export function App() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -30,33 +45,65 @@ export function App() {
   const [readingArticle, setReadingArticle] = useState<FeedItem | null>(null);
   const [newArticleCount, setNewArticleCount] = useState(0);
   const [showMobileDrawer, setShowMobileDrawer] = useState(false);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(() => getAutoRefreshPreference());
+  const [showImages, setShowImages] = useState(() => getShowImagesPreference());
 
-  // Silent refresh: fetches feed without loading state, shows banner if new articles found
+  // Shared silent-refresh pipeline: fetch → parse → diff against the cache →
+  // persist → update the visible list and notify when something is new.
+  const refreshFeed = useCallback(
+    async (feed: RssFeedModel) => {
+      const xml = await fetchFeedXml(feed.url);
+      const parsed = parseRssXml(xml, feed.id);
+      const cached = await getArticlesByFeed(feed.id);
+      const cachedIds = new Set(cached.map((a) => a.id));
+      const newItems = parsed.filter((p) => !cachedIds.has(p.id));
+      await cacheArticles(parsed);
+      if (newItems.length === 0) return;
+      if (feed.id === selectedFeed?.id) {
+        setArticles(parsed);
+        setNewArticleCount(newItems.length);
+      }
+      await showNewArticlesNotification(feed.title, newItems.length);
+    },
+    [selectedFeed],
+  );
+
+  // Pull-to-refresh (selected feed only — fast, user-visible)
   const silentRefresh = useCallback(async () => {
     if (!selectedFeed) return;
     try {
-      const xml = await fetchFeedXml(selectedFeed.url);
-      const parsed = parseRssXml(xml, selectedFeed.id);
-      const existingIds = new Set(articles.map((a) => a.id));
-      const newItems = parsed.filter((p) => !existingIds.has(p.id));
-      if (newItems.length > 0) {
-        setArticles(parsed);
-        setNewArticleCount(newItems.length);
-        await cacheArticles(parsed);
-        await showNewArticlesNotification(selectedFeed.title, newItems.length);
-      }
+      await refreshFeed(selectedFeed);
     } catch {
       // Silent refresh failures are ignored
     }
-  }, [selectedFeed, articles]);
+  }, [selectedFeed, refreshFeed]);
 
-  // Pull-to-refresh
   const { pulling, refreshing, onTouchStart, onTouchMove, onTouchEnd } = usePullToRefresh({
     onRefresh: silentRefresh,
   });
 
-  // Auto-refresh every 15 minutes
-  useAutoRefresh(silentRefresh, screen === 'home' && selectedFeed !== null);
+  // Auto-refresh sweeps every subscription so all categories stay fresh and
+  // can notify, not just the currently open feed. Bounded concurrency keeps
+  // a large subscription list from serializing into a minutes-long sweep
+  // without hammering the proxy.
+  const refreshAllFeeds = useCallback(async () => {
+    const subs = await getAllSubscriptions();
+    const concurrency = 4;
+    for (let i = 0; i < subs.length; i += concurrency) {
+      await Promise.all(
+        subs.slice(i, i + concurrency).map((feed) => refreshFeed(feed).catch(() => undefined)),
+      );
+    }
+  }, [refreshFeed]);
+
+  // Auto-refresh every 15 minutes, gated by the user's Settings toggle
+  useAutoRefresh(refreshAllFeeds, autoRefreshEnabled && menuItems.length > 0);
+
+  // Restore scroll position when returning to a previously-viewed feed
+  useScrollRestoration(
+    screen === 'home' && selectedFeed ? `home-${selectedFeed.id}` : null,
+    !isLoading,
+  );
 
   // Load subscriptions on mount
   useEffect(() => {
@@ -64,6 +111,8 @@ export function App() {
   }, []);
 
   async function loadConfig() {
+    void pruneExpiredArticles();
+
     const empty = await isDbEmpty();
     if (empty) {
       try {
@@ -79,9 +128,22 @@ export function App() {
     const items = buildMenuItems(subs);
     setMenuItems(items);
 
-    // Select first feed
-    if (subs.length > 0 && subs[0]) {
-      selectFeed(subs[0]);
+    // Notifications default on: ask for permission if it hasn't been decided
+    // yet (no-op when already granted), then keep the push worker's copy of
+    // the feed list current. Declining once leaves permission 'denied', so
+    // the user is never re-prompted.
+    if (isNotificationSupported() && getNotificationPreference()) {
+      void requestNotificationPermission().then((granted) => {
+        if (granted) return subscribeToPush(subs.map((f) => f.url));
+        return false;
+      });
+    }
+
+    // Restore the last-viewed feed on cold start; fall back to the first feed
+    const lastFeedId = getLastFeedId();
+    const initialFeed = subs.find((f) => f.id === lastFeedId) ?? subs[0];
+    if (initialFeed) {
+      selectFeed(initialFeed);
     }
   }
 
@@ -114,6 +176,7 @@ export function App() {
 
   const selectFeed = useCallback(async (feed: RssFeedModel) => {
     setSelectedFeed(feed);
+    setLastFeedId(feed.id);
     setShowMobileDrawer(false);
     navigate('home');
     setReadingArticle(null);
@@ -306,7 +369,7 @@ export function App() {
           </Box>
         )}
 
-        {newArticleCount > 0 && (
+        {screen === 'home' && newArticleCount > 0 && (
           <NewArticlesBanner
             count={newArticleCount}
             onDismiss={() => setNewArticleCount(0)}
@@ -318,7 +381,7 @@ export function App() {
             items={articles}
             isLoading={isLoading}
             errorMessage={errorMessage}
-            suppressHeroImage={selectedFeed?.suppressHeroImage ?? false}
+            suppressHeroImage={(selectedFeed?.suppressHeroImage ?? false) || !showImages}
             feedTitle={selectedFeed?.title ?? 'All Articles'}
             onSelectArticle={handleSelectArticle}
             onRetry={() => selectedFeed && selectFeed(selectedFeed)}
@@ -326,7 +389,20 @@ export function App() {
         )}
         {screen === 'search' && <SearchScreen onSelectArticle={handleSelectArticle} />}
         {screen === 'bookmarks' && <BookmarksScreen onSelectArticle={handleSelectArticle} />}
-        {screen === 'settings' && <SettingsScreen />}
+        {screen === 'settings' && (
+          <SettingsScreen
+            autoRefreshEnabled={autoRefreshEnabled}
+            onToggleAutoRefresh={(enabled) => {
+              setAutoRefreshEnabled(enabled);
+              setAutoRefreshPreference(enabled);
+            }}
+            showImages={showImages}
+            onToggleShowImages={(enabled) => {
+              setShowImages(enabled);
+              setShowImagesPreference(enabled);
+            }}
+          />
+        )}
       </AppShell.Main>
 
       {/* Mobile bottom tabs */}

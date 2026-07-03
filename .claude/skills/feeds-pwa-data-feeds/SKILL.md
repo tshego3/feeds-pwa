@@ -57,10 +57,11 @@ interface SavedArticle {
 ## Feed Fetching (src/feed/fetcher.ts)
 
 1. All fetch logic lives in `src/feed/` - components never call `fetch()` directly for RSS data.
-2. Fetch strategy (mirrors native FeedService.swift, upgraded for proxy flakiness):
-   - **Tier 1**: direct fetch - fastest when the feed sends CORS headers, fails instantly when it doesn't.
-   - **Tier 2**: all proxy tiers raced **in parallel**; first response that validates as feed XML wins, the rest are aborted. Tiers: optional custom Cloudflare Worker (`CUSTOM_PROXY`, most reliable for Cloudflare-protected feeds), Netlify proxy (`rss-proxy-api.netlify.app`), AllOrigins raw, Codetabs, AllOrigins JSON.
-3. Always URL-encode the feed URL when passing to proxies. 15-second `AbortController` timeout per request.
+2. Fetch strategy (all shared helpers live in `src/feed/proxy.ts`):
+   - **Tier 1**: the self-hosted Cloudflare Worker proxy (`proxy/cors-proxy-worker.js`, deployed as `feeds-proxy`) - it passes the Cloudflare bot checks that block public proxies and serves a 5-minute edge cache. It is the ONLY proxy; the old public tiers (Netlify, AllOrigins, Codetabs) were removed deliberately.
+   - **Tier 2**: direct fetch - the fallback when the Worker is unreachable; works when the feed sends CORS headers.
+   - The Worker allows the production origin (`https://tshego3.github.io`) plus `http://localhost:*` / `http://127.0.0.1:*` for dev; all other origins are rejected with 403.
+3. Always URL-encode the feed URL when passing to the proxy (`buildProxyUrl` does this). 15-second `AbortController` timeout per request via `fetchWithTimeout`.
 4. Validate every response body looks like RSS/Atom/RDF before accepting - proxies return HTML error pages with 200 status.
 5. Handle partial failures gracefully - display available articles even if some feeds fail. Typed error categories: `network`, `parsing`, `unavailable` (with status).
 
@@ -80,9 +81,11 @@ interface SavedArticle {
 
 1. Previously fetched articles must remain accessible offline (IndexedDB cache + SW runtime caching).
 2. Service Worker (`src/sw.ts`) uses Workbox precaching for static assets plus runtime caching. Note: the SW bundles `src/feed/fetcher.ts` for background refresh - a stale SW keeps old fetch logic until it updates.
-3. Manifest (`public/manifest.webmanifest`): app name "feeds", SVG icon (any + maskable), `display: standalone`, `theme_color: #131313`.
-4. Installable on mobile and desktop; "Add to Home Screen" optimized.
-5. Show a subtle offline indicator banner when the device is offline.
+3. Web Push: `push-worker/` (Cloudflare Worker, KV + 15-min cron) sends payload-free VAPID pushes when a subscribed feed has a new article; the SW's `push` handler fetches feeds itself and MUST always show a notification (userVisibleOnly contract - repeated silent pushes get the subscription revoked). The client half is `src/notifications/push.ts`; its VAPID public key must match `push-worker/wrangler.toml`, and its MAX_FEEDS must stay <= the worker's MAX_FEEDS_PER_SUB.
+4. The SW opens IndexedDB with raw `indexedDB.open(DB_NAME)` (no version, since `src/db/index.ts` owns the schema/version): always close connections when the transaction completes, set `onversionchange` to close, and abort in `onupgradeneeded` so the SW never creates an empty DB. When changing the schema in `src/db/index.ts`, audit `src/sw.ts`'s writers for drift (e.g. new required fields like `cachedAt`).
+5. Manifest (`public/manifest.webmanifest`): app name "feeds", SVG icon (any + maskable), `display: standalone`, `theme_color: #131313`.
+6. Installable on mobile and desktop; "Add to Home Screen" optimized.
+7. Show a subtle offline indicator banner when the device is offline.
 
 ## Security Rules (Client-Side)
 
