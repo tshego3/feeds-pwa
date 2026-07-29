@@ -37,20 +37,24 @@ export async function fetchOGImageUrl(articleUrl: string): Promise<string | null
 async function resolveOGImageUrl(articleUrl: string): Promise<string | null> {
   await acquireSlot();
   try {
-    // Tier 1: Cloudflare Worker proxy — passes the bot checks and CORS blocks
-    // that make direct article-HTML fetches fail on most sites.
-    let html = await tryFetchHtml(buildProxyUrl(articleUrl));
-    // Tier 2: direct fetch — works when the article's site sends CORS headers.
-    if (html === null) {
-      html = await tryFetchHtml(articleUrl);
-    }
-
+    const html = await fetchArticleHtml(articleUrl);
     const url = html === null ? null : extractOGImageUrl(html, articleUrl);
     ogCache.set(articleUrl, url);
     return url;
   } finally {
     releaseSlot();
   }
+}
+
+// Tier 1 is the Cloudflare Worker proxy, which passes the bot checks and CORS
+// blocks that make direct article-HTML fetches fail on most sites. Tier 2, the
+// direct fetch, only runs when the proxy itself never answered: once the proxy
+// has relayed an origin status such as 404, the article is genuinely gone and
+// retrying it directly can only repeat that failure with a CORS error on top.
+async function fetchArticleHtml(articleUrl: string): Promise<string | null> {
+  const proxied = await tryFetchHtml(buildProxyUrl(articleUrl));
+  if (proxied.answered) return proxied.html;
+  return (await tryFetchHtml(articleUrl)).html;
 }
 
 function extractOGImageUrl(html: string, articleUrl: string): string | null {
@@ -75,15 +79,22 @@ function toAbsoluteImageUrl(value: string, articleUrl: string): string | null {
   }
 }
 
-async function tryFetchHtml(url: string): Promise<string | null> {
+interface HtmlFetch {
+  readonly html: string | null;
+  // True when a server replied at all, even with an error status. False means
+  // the request never completed, so the next tier is still worth trying.
+  readonly answered: boolean;
+}
+
+async function tryFetchHtml(url: string): Promise<HtmlFetch> {
   try {
     const res = await fetchWithTimeout(url, OG_TIMEOUT_MS);
-    if (!res.ok) return null;
-    return await res.text();
+    if (!res.ok) return { html: null, answered: true };
+    return { html: await res.text(), answered: true };
   } catch {
-    // Network failure or timeout: the caller falls through to the next tier,
-    // and an article without a hero image still renders.
-    return null;
+    // Network failure, CORS block, or timeout. An article without a hero image
+    // still renders, so this is never surfaced to the reader.
+    return { html: null, answered: false };
   }
 }
 

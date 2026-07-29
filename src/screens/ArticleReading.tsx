@@ -1,5 +1,6 @@
 import { Box, Text, UnstyledButton } from '@mantine/core';
-import { IconArrowLeft, IconBookmark, IconBookmarkFilled, IconExternalLink, IconTextSize, IconX } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
+import { IconArrowLeft, IconArticle, IconBookmark, IconBookmarkFilled, IconCheck, IconExternalLink, IconShare, IconTextSize, IconX } from '@tabler/icons-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
@@ -14,19 +15,44 @@ interface ArticleReadingProps {
 
 const FONT_SCALES = [1.0, 1.2, 1.4] as const;
 
+// Sites that refuse framing usually do so instantly, but a slow origin should
+// not be reported as blocked before it has had a fair chance to answer.
+const FRAME_TIMEOUT_MS = 8000;
+
+type FrameStatus = 'loading' | 'ready' | 'blocked';
+
 export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingProps) {
   const [bookmarked, setBookmarked] = useState(false);
   const [fontScaleIndex, setFontScaleIndex] = useState(0);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(false);
+  const [frameStatus, setFrameStatus] = useState<FrameStatus>('loading');
   const fontScale = FONT_SCALES[fontScaleIndex] ?? 1.0;
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const rafId = useRef(0);
+  const copiedTimer = useRef(0);
+  const frameTimer = useRef(0);
   const imageUrl = useResolvedImage(article);
+  const showLabels = useMediaQuery('(min-width: 768px)');
+  const articleUrl = toWebUrl(article.link);
 
   useEffect(() => {
     isBookmarked(article.link).then(setBookmarked);
   }, [article.link]);
+
+  // The feed list stays mounted behind this overlay. Freezing the page scroll
+  // keeps touch gestures from reaching it; the position itself is untouched,
+  // so closing the article lands the reader exactly where they left off.
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
 
   // Scroll fires many times per second — write the progress straight to the
   // bar's transform (composited, no layout) at most once per frame instead of
@@ -45,6 +71,61 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
   }, []);
 
   useEffect(() => () => cancelAnimationFrame(rafId.current), []);
+
+  useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
+
+  useEffect(() => () => window.clearTimeout(frameTimer.current), []);
+
+  function openReader() {
+    setFrameStatus('loading');
+    window.clearTimeout(frameTimer.current);
+    frameTimer.current = window.setTimeout(() => setFrameStatus('blocked'), FRAME_TIMEOUT_MS);
+    setReaderOpen(true);
+  }
+
+  function closeReader() {
+    window.clearTimeout(frameTimer.current);
+    setReaderOpen(false);
+  }
+
+  // A frame refused by X-Frame-Options or a frame-ancestors policy still fires
+  // load, but it stays on about:blank, which we can read because it is not
+  // cross-origin. A page that actually rendered throws on the same read, so the
+  // SecurityError is the success signal here.
+  function onFrameLoad() {
+    window.clearTimeout(frameTimer.current);
+    try {
+      if (frameRef.current?.contentWindow?.location.href === 'about:blank') {
+        setFrameStatus('blocked');
+        return;
+      }
+    } catch {
+      // Cross-origin document loaded. Fall through to ready.
+    }
+    setFrameStatus('ready');
+  }
+
+  // Native share sheet where the platform offers one; copying the link is the
+  // desktop fallback, confirmed by a brief check mark on the button.
+  async function shareArticle() {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: article.title, url: article.link });
+      } catch {
+        // Dismissing the share sheet rejects with AbortError. Nothing to report.
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(article.link);
+    } catch {
+      // Clipboard access can be blocked; leave the button unchanged rather than
+      // claiming a copy that did not happen.
+      return;
+    }
+    setLinkCopied(true);
+    copiedTimer.current = window.setTimeout(() => setLinkCopied(false), 2000);
+  }
 
   async function toggleBookmark() {
     if (bookmarked) {
@@ -70,7 +151,16 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
   const formattedDate = formatDate(article.pubDate);
 
   return (
-    <Box style={{ height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: tokens.background }}>
+    <Box
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 400,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: tokens.background,
+      }}
+    >
       {/* Floating action bar (glassmorphic) */}
       <Box style={{ padding: '16px 24px 0' }}>
         <Box
@@ -112,14 +202,11 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
           </UnstyledButton>
 
           <UnstyledButton
-            component="a"
-            href={article.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            style={{ color: tokens.onSurfaceVariant }}
+            onClick={shareArticle}
+            aria-label={linkCopied ? 'Link copied' : 'Share article'}
+            style={{ color: linkCopied ? tokens.primary : tokens.onSurfaceVariant }}
           >
-            <IconExternalLink size={18} />
+            {linkCopied ? <IconCheck size={18} /> : <IconShare size={18} />}
           </UnstyledButton>
 
           <UnstyledButton
@@ -128,6 +215,37 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
           >
             <IconTextSize size={18} />
           </UnstyledButton>
+
+          {articleUrl && (
+            <>
+              {/* Divider */}
+              <Box
+                style={{
+                  width: 1,
+                  height: 16,
+                  marginLeft: 'auto',
+                  backgroundColor: tokens.outlineVariant,
+                }}
+              />
+
+              <UnstyledButton
+                onClick={openReader}
+                aria-label="Read full article"
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: tokens.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <IconArticle size={18} />
+                {showLabels && 'Read full article'}
+              </UnstyledButton>
+            </>
+          )}
         </Box>
       </Box>
 
@@ -148,7 +266,7 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
       <Box
         ref={scrollRef}
         onScroll={onScroll}
-        style={{ flex: 1, overflow: 'auto', padding: '0 0 80px' }}
+        style={{ flex: 1, overflow: 'auto', overscrollBehavior: 'contain', padding: '0 0 80px' }}
       >
         <Box style={{ maxWidth: 720, margin: '0 auto', paddingTop: 32 }}>
           {/* Metadata */}
@@ -233,28 +351,118 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
               {article.description}
             </Text>
           </Box>
-
-          {/* Divider */}
-          <Box style={{ margin: '0 24px', height: 1, backgroundColor: tokens.outlineVariant }} />
-
-          {/* Read full article link */}
-          <Box style={{ padding: '24px 24px' }}>
-            <UnstyledButton
-              component="a"
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: 15,
-                fontWeight: 500,
-                color: tokens.primary,
-              }}
-            >
-              Read full article →
-            </UnstyledButton>
-          </Box>
         </Box>
       </Box>
+
+      {/* In-app article viewer */}
+      {readerOpen && articleUrl && (
+        <Box
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 500,
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: tokens.background,
+          }}
+        >
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              padding: '12px 16px',
+              borderBottom: `1px solid ${tokens.outlineVariant}`,
+            }}
+          >
+            <UnstyledButton
+              onClick={closeReader}
+              aria-label="Close full article"
+              style={{ color: tokens.onSurfaceVariant, display: 'flex' }}
+            >
+              <IconX size={20} />
+            </UnstyledButton>
+
+            <Text
+              style={{
+                flex: 1,
+                fontSize: 13,
+                fontWeight: 500,
+                color: tokens.onSurfaceVariant,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {articleUrl.hostname}
+            </Text>
+
+            <UnstyledButton
+              component="a"
+              href={articleUrl.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open in browser"
+              style={{ color: tokens.onSurfaceVariant, display: 'flex' }}
+            >
+              <IconExternalLink size={18} />
+            </UnstyledButton>
+          </Box>
+
+          <Box style={{ flex: 1, position: 'relative' }}>
+            <iframe
+              ref={frameRef}
+              src={articleUrl.href}
+              title={article.title}
+              onLoad={onFrameLoad}
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+            />
+
+            {frameStatus !== 'ready' && (
+              <Box
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 16,
+                  padding: 24,
+                  textAlign: 'center',
+                  backgroundColor: tokens.background,
+                }}
+              >
+                <Text style={{ fontSize: 15, color: tokens.onSurfaceVariant }}>
+                  {frameStatus === 'loading'
+                    ? 'Loading article...'
+                    : 'This site does not allow reading inside the app.'}
+                </Text>
+
+                {frameStatus === 'blocked' && (
+                  <UnstyledButton
+                    component="a"
+                    href={articleUrl.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: tokens.onPrimary,
+                      backgroundColor: tokens.primary,
+                      padding: '10px 20px',
+                      borderRadius: 999,
+                    }}
+                  >
+                    Open in browser
+                  </UnstyledButton>
+                )}
+              </Box>
+            )}
+          </Box>
+        </Box>
+      )}
 
       {/* Fullscreen image viewer */}
       {viewerOpen && imageUrl && (
@@ -300,6 +508,18 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
       )}
     </Box>
   );
+}
+
+// Feed links are untrusted input, and an iframe src accepts scheme handlers a
+// plain link would not. Only http(s) targets reach the viewer.
+function toWebUrl(link: string): URL | null {
+  try {
+    const url = new URL(link);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url : null;
+  } catch {
+    // Relative or malformed links cannot be opened. Hide the control instead.
+    return null;
+  }
 }
 
 function formatDate(dateStr: string): string {

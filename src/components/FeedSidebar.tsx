@@ -12,7 +12,7 @@ interface FeedSidebarProps {
 
 export function FeedSidebar({ menuItems, selectedFeedId, onSelectFeed }: FeedSidebarProps) {
   return (
-    <Box component="nav" style={{ padding: '8px 0' }}>
+    <Box component="nav" aria-label="Feeds" style={{ padding: '8px 0' }}>
       {/* FEEDS section label */}
       <Text
         style={{

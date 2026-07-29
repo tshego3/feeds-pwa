@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppShell, Box, UnstyledButton, Text, Overlay, ScrollArea } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconHome, IconSearch, IconBookmark, IconSettings, IconMenu2 } from '@tabler/icons-react';
-import type { RssFeedModel, FeedMenuItem, FeedItem, AppScreen } from './types';
+import { IconSearch, IconMenu2 } from '@tabler/icons-react';
+import type { RssFeedModel, FeedMenuItem, FeedItem } from './types';
 import { tokens } from './theme';
 import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed, pruneExpiredArticles } from './db';
 import { fetchFeedXml, parseRssXml } from './feed';
 import { FeedSidebar } from './components/FeedSidebar';
+import { PrimaryNav, navTabs } from './components/PrimaryNav';
 import { Dashboard } from './screens/Dashboard';
 import { ArticleReading } from './screens/ArticleReading';
 import { SearchScreen } from './screens/Search';
@@ -218,24 +219,6 @@ export function App() {
     setReadingArticle(null);
   }
 
-  // Reading view takes over full screen
-  if (readingArticle) {
-    return (
-      <ArticleReading
-        article={readingArticle}
-        feedTitle={selectedFeed?.title ?? 'Article'}
-        onBack={handleBack}
-      />
-    );
-  }
-
-  const tabs: { id: AppScreen; icon: typeof IconHome; label: string }[] = [
-    { id: 'home', icon: IconHome, label: 'Home' },
-    { id: 'search', icon: IconSearch, label: 'Search' },
-    { id: 'bookmarks', icon: IconBookmark, label: 'Bookmarks' },
-    { id: 'settings', icon: IconSettings, label: 'Settings' },
-  ];
-
   return (
     <AppShell
       navbar={isDesktop ? { width: 272, breakpoint: 'sm' } : undefined}
@@ -261,6 +244,14 @@ export function App() {
             </Text>
           </Box>
           <ScrollArea style={{ flex: 1 }}>
+            <PrimaryNav current={screen} onNavigate={navigate} />
+            <Box
+              style={{
+                height: 1,
+                margin: '8px 24px',
+                backgroundColor: tokens.outlineVariant,
+              }}
+            />
             <FeedSidebar
               menuItems={menuItems}
               selectedFeedId={selectedFeed?.id ?? null}
@@ -429,7 +420,7 @@ export function App() {
             padding: '8px 0',
           }}
         >
-          {tabs.map((tab) => {
+          {navTabs.map((tab) => {
             const isActive = screen === tab.id;
             return (
               <UnstyledButton
@@ -463,6 +454,16 @@ export function App() {
             );
           })}
         </Box>
+      )}
+
+      {/* Reading view covers the screen instead of replacing the list, so the
+          feed keeps its scroll position (and its loaded images) underneath. */}
+      {readingArticle && (
+        <ArticleReading
+          article={readingArticle}
+          feedTitle={selectedFeed?.title ?? 'Article'}
+          onBack={handleBack}
+        />
       )}
     </AppShell>
   );
