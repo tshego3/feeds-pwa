@@ -98,9 +98,12 @@ export async function isDbEmpty(): Promise<boolean> {
 export async function seedSubscriptions(feeds: RssFeedModel[]): Promise<void> {
   const db = await getDb();
   const tx = db.transaction('subscriptions', 'readwrite');
-  for (const feed of feeds) {
-    await tx.store.add(feed);
-  }
+  // `put`, not `add`: seeding is idempotent this way. `add` raised
+  // ConstraintError on an id that already existed, which aborted the whole
+  // transaction and left tx.done rejecting with nobody awaiting it.
+  // Requests are issued in one tick so the transaction cannot auto-commit
+  // mid-loop.
+  await Promise.all(feeds.map((feed) => tx.store.put(feed)));
   await tx.done;
 }
 

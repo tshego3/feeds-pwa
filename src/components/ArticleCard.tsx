@@ -2,6 +2,7 @@ import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
+import { useResolvedImage } from '../hooks/useResolvedImage';
 
 interface ArticleCardProps {
   readonly article: FeedItem;
@@ -18,7 +19,7 @@ export function ArticleCard({
   isBookmarked,
   onToggleBookmark,
 }: ArticleCardProps) {
-  const imageUrl = suppressHeroImage ? undefined : article.imageUrls[0];
+  const imageUrl = useResolvedImage(article, suppressHeroImage);
   const formattedDate = formatDate(article.pubDate);
 
   return (
@@ -123,10 +124,15 @@ export function ArticleCard({
 interface CompactArticleRowProps {
   readonly article: FeedItem;
   readonly onSelect: (article: FeedItem) => void;
+  readonly suppressHeroImage?: boolean;
 }
 
-export function CompactArticleRow({ article, onSelect }: CompactArticleRowProps) {
-  const imageUrl = article.imageUrls[0];
+export function CompactArticleRow({
+  article,
+  onSelect,
+  suppressHeroImage,
+}: CompactArticleRowProps) {
+  const imageUrl = useResolvedImage(article, suppressHeroImage);
   const formattedDate = formatDate(article.pubDate);
 
   return (

@@ -2,12 +2,14 @@ import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconBookmark, IconBookmarkFilled, IconExternalLink } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
+import { useResolvedImage } from '../hooks/useResolvedImage';
 
 interface FeaturedArticleCardProps {
   readonly article: FeedItem;
   readonly onSelect: (article: FeedItem) => void;
   readonly isBookmarked?: boolean;
   readonly onToggleBookmark?: (article: FeedItem) => void;
+  readonly suppressHeroImage?: boolean;
 }
 
 export function FeaturedArticleCard({
@@ -15,8 +17,9 @@ export function FeaturedArticleCard({
   onSelect,
   isBookmarked,
   onToggleBookmark,
+  suppressHeroImage,
 }: FeaturedArticleCardProps) {
-  const imageUrl = article.imageUrls[0];
+  const imageUrl = useResolvedImage(article, suppressHeroImage);
   const formattedDate = article.pubDate ? formatDate(article.pubDate) : '';
 
   return (
@@ -32,7 +35,6 @@ export function FeaturedArticleCard({
         border: `1px solid ${tokens.outlineVariant}`,
         minHeight: imageUrl ? 380 : 200,
         cursor: 'pointer',
-        maxWidth: 720,
       }}
     >
       {/* Background image (grayscale) */}

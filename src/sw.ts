@@ -2,10 +2,22 @@
 
 import { precacheAndRoute } from 'workbox-precaching';
 import { fetchFeedXml } from './feed/fetcher';
+import { parseFeedXmlSw } from './feed/swParser';
+import type { FeedItem } from './types';
 
 declare const self: ServiceWorkerGlobalScope;
 
 const DB_NAME = 'feeds-db';
+
+// A background event does not get unlimited time: the browser terminates the
+// worker shortly after the event settles (~30s in Chromium, less on iOS).
+// Sweeping every subscription one at a time — each with a 15s proxy timeout
+// plus a 15s direct-fetch fallback, against a 45-feed default list — could not
+// finish, so the worker was killed mid-sweep: almost nothing was cached and
+// the real notification never showed. Fetch in parallel batches and stop at a
+// deadline instead; every batch that completed is already persisted.
+const REFRESH_BUDGET_MS = 20_000;
+const REFRESH_CONCURRENCY = 6;
 
 // Workbox injects the precache manifest at build time
 precacheAndRoute(self.__WB_MANIFEST);
@@ -67,18 +79,22 @@ self.addEventListener('periodicsync', (event: Event) => {
 // a generic notice: the worker only pushes when it detected a new article.
 self.addEventListener('push', (event) => {
   event.waitUntil(
-    backgroundRefreshFeeds().then((totalNewArticles) => {
-      if (totalNewArticles === 0) {
-        return self.registration.showNotification('feeds', {
-          body: 'New articles available',
-          icon: '/feeds-pwa/favicon.svg',
-          badge: '/feeds-pwa/favicon.svg',
-          tag: 'new-articles',
-          data: { url: '/feeds-pwa/' },
-        } as NotificationOptions);
-      }
-      return undefined;
-    }),
+    backgroundRefreshFeeds()
+      // A rejection here would leave the push with no notification at all, and
+      // the browser substitutes its own "site updated in background" notice.
+      .catch(() => 0)
+      .then((totalNewArticles) => {
+        if (totalNewArticles === 0) {
+          return self.registration.showNotification('feeds', {
+            body: 'New articles available',
+            icon: '/feeds-pwa/favicon.svg',
+            badge: '/feeds-pwa/favicon.svg',
+            tag: 'new-articles',
+            data: { url: '/feeds-pwa/' },
+          } as NotificationOptions);
+        }
+        return undefined;
+      }),
   );
 });
 
@@ -99,20 +115,36 @@ self.addEventListener('notificationclick', (event) => {
 // --- Background refresh logic ---
 
 async function backgroundRefreshFeeds(): Promise<number> {
-  const subscriptions = await getSubscriptionsFromDb();
-  if (subscriptions.length === 0) return 0;
+  const deadline = Date.now() + REFRESH_BUDGET_MS;
+
+  // One connection for the whole sweep — the old code opened and closed the
+  // database twice per feed, 180 opens for the default subscription list.
+  const db = await openFeedsDb();
+  if (!db) return 0;
 
   let totalNewArticles = 0;
+  try {
+    const subscriptions = await readSubscriptions(db);
+    if (subscriptions.length === 0) return 0;
 
-  for (const feed of subscriptions) {
-    try {
-      const xml = await fetchFeedXml(feed.url);
-      const articles = parseRssXmlSw(xml, feed.id);
-      const newCount = await cacheNewArticles(feed.id, articles);
-      totalNewArticles += newCount;
-    } catch {
-      // Individual feed failure — skip silently
+    for (let i = 0; i < subscriptions.length; i += REFRESH_CONCURRENCY) {
+      if (Date.now() >= deadline) break;
+      const batch = subscriptions.slice(i, i + REFRESH_CONCURRENCY);
+      const counts = await Promise.all(
+        batch.map(async (feed) => {
+          try {
+            const xml = await fetchFeedXml(feed.url);
+            return await cacheNewArticles(db, parseFeedXmlSw(xml, feed.id));
+          } catch {
+            // Individual feed failure — skip silently
+            return 0;
+          }
+        }),
+      );
+      for (const count of counts) totalNewArticles += count;
     }
+  } finally {
+    db.close();
   }
 
   if (totalNewArticles > 0) {
@@ -121,114 +153,67 @@ async function backgroundRefreshFeeds(): Promise<number> {
   return totalNewArticles;
 }
 
-function parseRssXmlSw(xml: string, feedId: number): Array<{ feedId: number; link: string; title: string }> {
-  // Minimal parser for SW context — only needs link + title for dedup and notification
-  const items: Array<{ feedId: number; link: string; title: string }> = [];
-  // Use regex-based extraction since DOMParser may not be available in all SW contexts
-  const itemRegex = /<item[\s>]([\s\S]*?)<\/item>/gi;
-  let match = itemRegex.exec(xml);
-  let count = 0;
-
-  while (match && count < 100) {
-    const block = match[1] ?? '';
-    const linkMatch = /<link>([\s\S]*?)<\/link>/.exec(block);
-    const titleMatch = /<title>([\s\S]*?)<\/title>/.exec(block);
-    const link = linkMatch?.[1]?.trim() ?? '';
-    const title = titleMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1')?.trim() ?? '';
-
-    if (link) {
-      items.push({ feedId, link, title });
-    }
-    match = itemRegex.exec(xml);
-    count++;
-  }
-  return items;
-}
-
-async function getSubscriptionsFromDb(): Promise<Array<{ id: number; url: string; title: string }>> {
+function openFeedsDb(): Promise<IDBDatabase | null> {
   return new Promise((resolve) => {
     const request = indexedDB.open(DB_NAME);
-    request.onerror = () => resolve([]);
+    request.onerror = () => resolve(null);
     // The app hasn't created the DB yet — abort so this versionless open
     // doesn't create an empty v1 database the app would then have to upgrade.
     request.onupgradeneeded = () => {
       request.transaction?.abort();
-      resolve([]);
+      resolve(null);
     };
     request.onsuccess = () => {
       const db = request.result;
-      // Never hold the app's schema upgrade hostage: close when asked, and
-      // close as soon as the read completes.
+      // Never hold the app's schema upgrade hostage.
       db.onversionchange = () => db.close();
-      try {
-        const tx = db.transaction('subscriptions', 'readonly');
-        const store = tx.objectStore('subscriptions');
-        const getAll = store.getAll();
-        getAll.onsuccess = () => resolve(getAll.result ?? []);
-        getAll.onerror = () => resolve([]);
-        tx.oncomplete = () => db.close();
-        tx.onabort = () => db.close();
-      } catch {
-        db.close();
-        resolve([]);
-      }
+      resolve(db);
     };
   });
 }
 
-async function cacheNewArticles(
-  feedId: number,
-  articles: Array<{ feedId: number; link: string; title: string }>,
-): Promise<number> {
+function readSubscriptions(db: IDBDatabase): Promise<Array<{ id: number; url: string; title: string }>> {
   return new Promise((resolve) => {
-    const request = indexedDB.open(DB_NAME);
-    request.onerror = () => resolve(0);
-    request.onupgradeneeded = () => {
-      request.transaction?.abort();
-      resolve(0);
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      db.onversionchange = () => db.close();
-      try {
-        const tx = db.transaction('articles', 'readwrite');
-        tx.oncomplete = () => db.close();
-        tx.onabort = () => db.close();
-        const store = tx.objectStore('articles');
-        let newCount = 0;
-        let pending = articles.length;
+    try {
+      const tx = db.transaction('subscriptions', 'readonly');
+      const getAll = tx.objectStore('subscriptions').getAll();
+      getAll.onsuccess = () => resolve(getAll.result ?? []);
+      tx.onabort = () => resolve([]);
+      tx.onerror = () => resolve([]);
+    } catch {
+      resolve([]);
+    }
+  });
+}
 
-        if (pending === 0) { resolve(0); return; }
+function cacheNewArticles(db: IDBDatabase, articles: FeedItem[]): Promise<number> {
+  if (articles.length === 0) return Promise.resolve(0);
 
-        for (const article of articles) {
-          const key = [feedId, article.link] as unknown as IDBValidKey;
-          const check = store.get(key);
-          check.onsuccess = () => {
-            if (!check.result) {
-              // New article — store minimal record
-              store.put({
-                ...article,
-                id: btoa(article.link).slice(0, 16),
-                description: '',
-                pubDate: '',
-                imageUrls: [],
-                cachedAt: Date.now(),
-              });
-              newCount++;
-            }
-            pending--;
-            if (pending === 0) resolve(newCount);
-          };
-          check.onerror = () => {
-            pending--;
-            if (pending === 0) resolve(newCount);
-          };
-        }
-      } catch {
-        db.close();
-        resolve(0);
+  return new Promise((resolve) => {
+    let newCount = 0;
+    try {
+      const tx = db.transaction('articles', 'readwrite');
+      const store = tx.objectStore('articles');
+
+      // Settle on the transaction, not on a per-request counter: a throw inside
+      // any one request callback used to leave the counter stuck above zero and
+      // this promise pending forever, so waitUntil hung until the browser killed
+      // the worker — losing the whole sweep.
+      tx.oncomplete = () => resolve(newCount);
+      tx.onabort = () => resolve(newCount);
+      tx.onerror = () => resolve(newCount);
+
+      for (const article of articles) {
+        const check = store.get([article.feedId, article.link]);
+        check.onsuccess = () => {
+          if (check.result) return;
+          newCount++;
+          store.put(article);
+        };
       }
-    };
+    } catch {
+      resolve(0);
+    }
   });
 }
 

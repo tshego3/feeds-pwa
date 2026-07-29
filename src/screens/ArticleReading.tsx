@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { FeedItem } from '../types';
 import { tokens } from '../theme';
 import { isBookmarked, addBookmark, removeBookmark } from '../db';
+import { useResolvedImage } from '../hooks/useResolvedImage';
 
 interface ArticleReadingProps {
   readonly article: FeedItem;
@@ -21,6 +22,7 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
   const scrollRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const rafId = useRef(0);
+  const imageUrl = useResolvedImage(article);
 
   useEffect(() => {
     isBookmarked(article.link).then(setBookmarked);
@@ -53,7 +55,7 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
         link: article.link,
         title: article.title,
         description: article.description,
-        imageUrl: article.imageUrls[0],
+        imageUrl,
         feedTitle,
         savedAt: Date.now(),
       });
@@ -66,7 +68,6 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
   }
 
   const formattedDate = formatDate(article.pubDate);
-  const imageUrl = article.imageUrls[0];
 
   return (
     <Box style={{ height: '100dvh', display: 'flex', flexDirection: 'column', backgroundColor: tokens.background }}>

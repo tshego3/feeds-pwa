@@ -6,6 +6,11 @@ import { ArticleCard, CompactArticleRow } from '../components/ArticleCard';
 import { ErrorState, EmptyState, LoadingSkeleton } from '../components/StateViews';
 import { tokens } from '../theme';
 
+// The article column fills the space the sidebar leaves. The cap only engages
+// on very wide monitors, where full-bleed compact rows would stretch a single
+// line of text across the whole screen.
+const CONTENT_MAX_WIDTH = 1440;
+
 interface DashboardProps {
   readonly items: readonly FeedItem[];
   readonly isLoading: boolean;
@@ -49,7 +54,7 @@ export function Dashboard({
   const compactItems = items.slice(gridStart + 6);
 
   return (
-    <Box style={{ maxWidth: 720, margin: '0 auto', paddingBottom: 80 }}>
+    <Box style={{ maxWidth: CONTENT_MAX_WIDTH, margin: '0 auto', paddingBottom: 80 }}>
       {/* Header */}
       <Box style={{ padding: '32px 24px' }}>
         <Text
@@ -79,14 +84,20 @@ export function Dashboard({
       {/* Featured article */}
       {featured && (
         <Box style={{ padding: '0 24px', marginBottom: 24 }}>
-          <FeaturedArticleCard article={featured} onSelect={handleSelect} />
+          <FeaturedArticleCard
+            article={featured}
+            onSelect={handleSelect}
+            suppressHeroImage={suppressHeroImage}
+          />
         </Box>
       )}
 
-      {/* Secondary grid (2 columns) */}
+      {/* Secondary grid: 2 columns from tablet. The third column only comes in
+          at xl, where there is enough width that each card still grows rather
+          than shrinking to make room for it. */}
       {gridItems.length > 0 && (
         <Box style={{ padding: '0 24px', marginBottom: 24 }}>
-          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing={16}>
+          <SimpleGrid cols={{ base: 1, sm: 2, xl: 3 }} spacing={16}>
             {gridItems.map((article) => (
               <ArticleCard
                 key={article.id}
@@ -103,7 +114,12 @@ export function Dashboard({
       {compactItems.length > 0 && (
         <Box style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           {compactItems.map((article) => (
-            <CompactArticleRow key={article.id} article={article} onSelect={handleSelect} />
+            <CompactArticleRow
+              key={article.id}
+              article={article}
+              onSelect={handleSelect}
+              suppressHeroImage={suppressHeroImage}
+            />
           ))}
         </Box>
       )}

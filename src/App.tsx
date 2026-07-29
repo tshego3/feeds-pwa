@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppShell, Box, UnstyledButton, Text, Overlay, ScrollArea } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconHome, IconSearch, IconBookmark, IconSettings, IconMenu2 } from '@tabler/icons-react';
@@ -21,7 +21,6 @@ import {
   showNewArticlesNotification,
   getNotificationPreference,
   isNotificationSupported,
-  requestNotificationPermission,
 } from './notifications';
 import { subscribeToPush } from './notifications/push';
 import {
@@ -105,9 +104,15 @@ export function App() {
     !isLoading,
   );
 
-  // Load subscriptions on mount
+  // Load subscriptions on mount. The ref guard keeps StrictMode's double-invoked
+  // effect from running two concurrent seeds against an empty database.
+  const configLoaded = useRef(false);
   useEffect(() => {
-    loadConfig();
+    if (configLoaded.current) return;
+    configLoaded.current = true;
+    void loadConfig().catch(() => {
+      // Startup is best effort; a failure leaves the empty state on screen.
+    });
   }, []);
 
   async function loadConfig() {
@@ -128,14 +133,16 @@ export function App() {
     const items = buildMenuItems(subs);
     setMenuItems(items);
 
-    // Notifications default on: ask for permission if it hasn't been decided
-    // yet (no-op when already granted), then keep the push worker's copy of
-    // the feed list current. Declining once leaves permission 'denied', so
-    // the user is never re-prompted.
-    if (isNotificationSupported() && getNotificationPreference()) {
-      void requestNotificationPermission().then((granted) => {
-        if (granted) return subscribeToPush(subs.map((f) => f.url));
-        return false;
+    // Keep the push worker's copy of the feed list current. Never prompt from
+    // here: Safari requires Notification.requestPermission to come from a user
+    // gesture, so the prompt lives behind the Settings toggle.
+    if (
+      isNotificationSupported() &&
+      getNotificationPreference() &&
+      Notification.permission === 'granted'
+    ) {
+      void subscribeToPush(subs.map((f) => f.url)).catch(() => {
+        // Push is optional; foreground refresh still works without it.
       });
     }
 

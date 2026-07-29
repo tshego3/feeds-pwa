@@ -1,4 +1,5 @@
 import type { FeedItem } from '../types';
+import { generateId } from './articleId';
 
 export function parseRssXml(xml: string, feedId: number): FeedItem[] {
   const parser = new DOMParser();
@@ -72,14 +73,4 @@ function extractImageUrls(item: Element): string[] {
   if (imgMatch?.[1]) urls.push(imgMatch[1]);
 
   return [...new Set(urls)];
-}
-
-function generateId(link: string): string {
-  let hash = 0;
-  for (let i = 0; i < link.length; i++) {
-    const char = link.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0;
-  }
-  return Math.abs(hash).toString(36);
 }

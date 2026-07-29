@@ -5,6 +5,7 @@ import type { FeedItem } from '../types';
 import { getAllArticles } from '../db';
 import { LoadingSkeleton, EmptyState } from '../components/StateViews';
 import { tokens } from '../theme';
+import { useResolvedImage } from '../hooks/useResolvedImage';
 
 const MAX_RECENT = 10;
 const STORAGE_KEY = 'feeds-recent-searches';
@@ -230,7 +231,7 @@ interface SearchResultRowProps {
 }
 
 function SearchResultRow({ article, onSelect }: SearchResultRowProps) {
-  const imageUrl = article.imageUrls[0];
+  const imageUrl = useResolvedImage(article);
   const formattedDate = formatDate(article.pubDate);
 
   return (

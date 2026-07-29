@@ -17,8 +17,12 @@ if (root) {
   );
 }
 
-// Register service worker (built by vite-plugin-pwa)
-if ('serviceWorker' in navigator) {
+// Register service worker (built by vite-plugin-pwa). Production only: the dev
+// server has no sw.js to serve, so registering there fails with an
+// "unsupported MIME type ('text/html')" error from the SPA fallback.
+// To exercise the SW (offline, push, precache), run `npm run build && npm run
+// preview` — that serves the real built worker instead of a dev-only stub.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
       const registration = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
