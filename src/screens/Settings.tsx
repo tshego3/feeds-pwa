@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Box, Text, UnstyledButton, Switch, TextInput, Button } from '@mantine/core';
+import { Box, Text, UnstyledButton, Switch, TextInput, Button, Modal, SegmentedControl, MultiSelect } from '@mantine/core';
 import { IconTrash, IconPlus, IconPhoto, IconPhotoOff, IconAntenna, IconFileExport } from '@tabler/icons-react';
 import type { RssFeedModel } from '../types';
-import { getAllSubscriptions, addSubscription, removeSubscription, updateSuppressHeroImage, clearArticles } from '../db';
-import { tokens } from '../theme';
+import { getAllSubscriptions, addSubscription, removeSubscription, updateSuppressHeroImage, clearArticles, clearLessons, clearIdeas } from '../db';
+// Not the '../learning' barrel: Settings is in the main bundle, and the barrel
+// would pull the whole learning layer in with it.
+import { INTEREST_SOURCES } from '../learning/sources';
+import { DAILY_GOALS, getDailyGoal, getInterests, getTopFeedUrls, setDailyGoal, setInterests, setTopFeedUrls } from '../preferences';
+import { InterestPicker } from '../components/feed/InterestPicker';
+import { alpha, tokens } from '../theme';
 import {
   isNotificationSupported,
   getNotificationPreference,
@@ -130,6 +135,8 @@ export function SettingsScreen({
       </SettingsSection>
 
       {/* Feed Management section */}
+      <LearningSettings feeds={feeds} />
+
       <SettingsSection title="Feed Management">
         <GlassPanel>
           <UnstyledButton
@@ -197,6 +204,25 @@ export function SettingsScreen({
               }}
             >
               Clear Cache
+            </Button>
+          </Box>
+          <Divider />
+          <Box style={{ padding: 20 }}>
+            <Text style={{ fontSize: 15, fontWeight: 500, color: tokens.primary }}>
+              Clear Lessons
+            </Text>
+            <Text style={{ fontSize: 13, color: tokens.onSurfaceVariant, marginTop: 4 }}>
+              Remove saved lessons (streak preserved)
+            </Text>
+            <Button
+              variant="subtle"
+              color="red"
+              mt="md"
+              onClick={async () => {
+                await clearLessons();
+              }}
+            >
+              Clear Lessons
             </Button>
           </Box>
         </GlassPanel>
@@ -589,7 +615,7 @@ function GlassPanel({ children }: { children: React.ReactNode }) {
   return (
     <Box
       style={{
-        backgroundColor: `${tokens.surfaceContainerLow}CC`,
+        backgroundColor: alpha(tokens.surfaceContainerLow, 80),
         borderRadius: 12,
         border: `1px solid ${tokens.outlineVariant}`,
         overflow: 'hidden',
@@ -639,4 +665,79 @@ function exportSubscriptions(feeds: RssFeedModel[]) {
   a.download = 'feeds-subscriptions.json';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+// --- Learning ---
+
+function LearningSettings({ feeds }: { readonly feeds: readonly RssFeedModel[] }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [topFeeds, setTopFeeds] = useState(getTopFeedUrls);
+  const [interests, setInterestState] = useState(getInterests);
+  const [goal, setGoal] = useState(getDailyGoal);
+  const names = INTEREST_SOURCES.filter((s) => interests.includes(s.id)).map((s) => s.title);
+  return (
+    <SettingsSection title="Learning">
+      <GlassPanel>
+        <UnstyledButton onClick={() => setPickerOpen(true)} style={{ display: 'block', width: '100%', padding: 16 }}>
+          <Text style={{ fontSize: 15, fontWeight: 500, color: tokens.primary }}>Interests</Text>
+          <Text style={{ fontSize: 11, color: tokens.onSurfaceVariant, marginTop: 4 }}>
+            {names.length > 0 ? names.join(', ') : 'Not chosen yet'}
+          </Text>
+        </UnstyledButton>
+        <Divider />
+        <Box style={{ padding: 16 }}>
+          <MultiSelect
+            label="Top news sources"
+            description="These feeds come first in For You and get twice the slots. All other feeds still rotate in."
+            data={[...new Map(feeds.map((f) => [f.url, { value: f.url, label: f.title }])).values()]}
+            value={topFeeds}
+            onChange={(urls) => {
+              setTopFeedUrls(urls);
+              setTopFeeds(urls);
+            }}
+            searchable
+            clearable
+          />
+        </Box>
+        <Divider />
+        <Box style={{ padding: 16 }}>
+          <Text id="daily-goal-label" style={{ fontSize: 15, fontWeight: 500, color: tokens.primary, marginBottom: 8 }}>
+            Daily goal (ideas)
+          </Text>
+          <SegmentedControl
+            aria-labelledby="daily-goal-label"
+            value={String(goal)}
+            onChange={(value) => {
+              const next = Number(value);
+              setDailyGoal(next);
+              setGoal(next);
+            }}
+            data={DAILY_GOALS.map((g) => ({ value: String(g), label: String(g) }))}
+          />
+        </Box>
+        <Divider />
+        <Box style={{ padding: 20 }}>
+          <Text style={{ fontSize: 15, fontWeight: 500, color: tokens.primary }}>Clear Saved Ideas</Text>
+          <Text style={{ fontSize: 13, color: tokens.onSurfaceVariant, marginTop: 4 }}>
+            Remove ideas saved from For You (streak preserved)
+          </Text>
+          <Button variant="subtle" color="red" mt="md" onClick={async () => { await clearIdeas(); }}>
+            Clear Ideas
+          </Button>
+        </Box>
+      </GlassPanel>
+      <Modal opened={pickerOpen} onClose={() => setPickerOpen(false)} title="Interests" centered>
+        <InterestPicker
+          interests={INTEREST_SOURCES}
+          selected={interests}
+          saveLabel="Save interests"
+          onSave={(ids) => {
+            setInterests(ids);
+            setInterestState(ids);
+            setPickerOpen(false);
+          }}
+        />
+      </Modal>
+    </SettingsSection>
+  );
 }

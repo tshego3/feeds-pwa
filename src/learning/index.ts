@@ -1,0 +1,14 @@
+export { getOrCreateLesson, listLessons, listSuggestions } from './lessonService';
+export { markLessonComplete, getStreakSummary } from './progress';
+export { isSpeechSupported, loadVoices, pickVoice, speakSegments, type SpeechHandle } from './speech';
+export { getOrBuildBook, listBuiltBooks, bookLink, canBuildMoreBooks, supportsBookWorker } from './books';
+export { loadBookCatalog, booksFor, nextBook } from './catalog';
+export { topicsForInterest, fetchDailyTopic } from './wikipedia';
+export { nextQuiz } from './trivia';
+export { pruneCatalogCache } from './cache';
+export { INTEREST_SOURCES, sourceFor, coverUrl } from './sources';
+export { buildPools, buildBookPools, buildArticlePool, warmBooks, needsMoreBooks, recordSeen, type PoolContext } from './feedService';
+export { loadNewsSources, refreshNews, type NewsSources } from './newsSource';
+export { nextPage, insertAfter, INITIAL_MIX_STATE, EMPTY_POOLS, type FeedPools, type MixState } from './feedMix';
+export { toggleSavedIdea, isIdeaSaved, answerReview, listSavedIdeas, removeSavedIdea } from './ideas';
+export { recordIdeasViewed, getTodayProgress, type TodayProgress } from './progress';

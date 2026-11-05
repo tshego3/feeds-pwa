@@ -1,4 +1,4 @@
-import { createTheme, type MantineColorsTuple } from '@mantine/core';
+import { createTheme, type CSSVariablesResolver, type MantineColorsTuple } from '@mantine/core';
 
 const dark: MantineColorsTuple = [
   '#F5F5F5', // 0 - primary text
@@ -13,8 +13,11 @@ const dark: MantineColorsTuple = [
   '#2D2D2D', // 9
 ];
 
-// Mirrors native Theme.swift Dark (Monolithic Clarity) palette
-export const tokens = {
+// Monolithic Clarity palettes. Dark mirrors native Theme.swift; light keeps
+// the same tonal layering, inverted (lighter surfaces sit higher). These two
+// maps are the single source of color values; components read `tokens`,
+// which point at CSS variables that follow the system color scheme.
+const DARK = {
   background: '#131313',
   surface: '#131313',
   surfaceContainerLow: '#1C1B1B',
@@ -34,6 +37,57 @@ export const tokens = {
   accent: '#FFFFFF',
   border: '#444748',
 } as const;
+
+type TokenName = keyof typeof DARK;
+
+const LIGHT: Readonly<Record<TokenName, string>> = {
+  background: '#F5F5F3',
+  surface: '#F5F5F3',
+  surfaceContainerLow: '#FFFFFF',
+  surfaceContainerHigh: '#EAEAE8',
+  surfaceVariant: '#E0E0DD',
+  elevated: '#E6E6E4',
+  primary: '#131313',
+  onPrimary: '#FFFFFF',
+  onSurface: '#1C1B1B',
+  onSurfaceVariant: '#46494B',
+  secondaryContainer: '#E2E2E0',
+  outline: '#74777A',
+  outlineVariant: '#D4D6D7',
+  error: '#8A4F00',
+  textPrimary: '#131313',
+  textSecondary: '#4A4D50',
+  accent: '#131313',
+  border: '#D4D6D7',
+};
+
+const TOKEN_NAMES = Object.keys(DARK) as TokenName[];
+
+function cssVar(name: TokenName): string {
+  return `--fd-${name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`;
+}
+
+export const tokens = Object.fromEntries(
+  TOKEN_NAMES.map((name) => [name, `var(${cssVar(name)})`]),
+) as Readonly<Record<TokenName, string>>;
+
+// Translucent version of a token, e.g. alpha(tokens.surface, 80) for glass
+// overlays. Works with CSS variables, unlike appending hex alpha digits.
+export function alpha(color: string, percent: number): string {
+  return `color-mix(in srgb, ${color} ${percent}%, transparent)`;
+}
+
+function toVariables(palette: Readonly<Record<TokenName, string>>): Record<string, string> {
+  return Object.fromEntries(TOKEN_NAMES.map((name) => [cssVar(name), palette[name]]));
+}
+
+// Emitted by MantineProvider under the active color scheme ("auto" follows
+// the system setting).
+export const cssVariablesResolver: CSSVariablesResolver = () => ({
+  variables: {},
+  light: toVariables(LIGHT),
+  dark: toVariables(DARK),
+});
 
 export const theme = createTheme({
   primaryColor: 'dark',

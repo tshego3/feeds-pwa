@@ -4,7 +4,7 @@ import { IconBookmarkOff, IconBookmark } from '@tabler/icons-react';
 import type { FeedItem, SavedArticle } from '../types';
 import { getAllBookmarks, removeBookmark } from '../db';
 import { LoadingSkeleton } from '../components/StateViews';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 
 interface BookmarksScreenProps {
   readonly onSelectArticle: (article: FeedItem) => void;
@@ -155,7 +155,7 @@ function SavedArticleCard({ bookmark, onSelect, onRemove }: SavedArticleCardProp
         padding: 20,
         backgroundColor: tokens.surfaceContainerLow,
         borderRadius: 12,
-        border: `1px solid ${tokens.outlineVariant}33`,
+        border: `1px solid ${alpha(tokens.outlineVariant, 20)}`,
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',

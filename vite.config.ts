@@ -29,10 +29,15 @@ export default defineConfig({
       manifest: false,
       injectManifest: {
         rollupFormat: 'iife',
+        // Fonts and icons too, so lessons render offline. feeds.json is left
+        // out: the app reads it only on first launch.
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}', 'learning/*.json'],
       },
     }),
   ],
   base: '/feeds-pwa/',
+  // The book summarizer runs as a module Web Worker.
+  worker: { format: 'es' },
   build: {
     outDir: 'dist',
     sourcemap: false,

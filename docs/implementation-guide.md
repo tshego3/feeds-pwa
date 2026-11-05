@@ -138,12 +138,15 @@ feeds-pwa/
     feeds.json             # Default/seed feed subscriptions (mirrors native DefaultFeeds)
   src/
     types/                 # RssFeedModel, FeedItem, FeedMenuItem, SavedArticle, FeedError
-    db/                    # IndexedDB setup + CRUD (subscriptions, articles, bookmarks stores)
-    feed/                  # XML fetch (proxy chain), RSS/Atom parser, OpenGraph service
+    db/                    # IndexedDB setup + CRUD (subscriptions, articles, bookmarks, lessons, learningDays)
+    feed/                  # XML fetch (proxy chain), RSS/Atom parser, OpenGraph, article HTML fetch
+    learning/              # Learning services: lessons, books, catalog, Wikipedia, trivia, feed mixing, streaks, speech
     theme/                 # Mantine theme override (Monolithic Clarity tokens)
     components/            # FeaturedArticleCard, ArticleCard, CompactArticleRow, FeedSidebar, NewArticlesBanner, StateViews
-    screens/               # Dashboard, ArticleReading, Search, Bookmarks, Settings
-    hooks/                 # useRouter, usePullToRefresh, useAutoRefresh
+    components/learning/   # StreakBadge, LessonCardCarousel, TextSummaryList, AudioSummaryPlayer, LessonListItem
+    components/feed/       # FeedCardFrame, FeedCards, InterestPicker, DailyGoalRing, SourceAttribution
+    screens/               # ForYou, Dashboard (Feeds), Explore, Library, LessonsPanel, ArticleReading, LessonView, Search, Settings
+    hooks/                 # useRouter, usePullToRefresh, useAutoRefresh, useLesson, useLessonLibrary, useStreak, useSpeech
     sw.ts                  # Service Worker (Workbox precaching + article cache)
     App.tsx                # AppShell with responsive nav (bottom tabs / sidebar)
     main.tsx               # Entry point with MantineProvider + SW registration
@@ -157,8 +160,10 @@ feeds-pwa/
 
 ### 3. IndexedDB Schema
 
+Version 4. Stores added in v4: `ideas` (saved ideas, key `id`, index `by-review-due`), `catalogCache` (API bodies with a TTL, key `url`), and `feedSeen` (seen feed cards, key `cardId`, pruned after 30 days). `lessons` keeps 100 article lessons and 30 book lessons; `learningDays` gains `ideasViewed`.
+
 ```typescript
-// Database: feeds-db
+// Database: feeds-db (version 3)
 
 // Store: subscriptions (autoIncrement key: id)
 interface FeedSubscription {
@@ -191,7 +196,38 @@ interface SavedArticle {
   feedTitle: string;
   savedAt: number;
 }
+
+// Store: lessons (key: link, index: by-created-at). Capped at 100; oldest go first.
+// Not subject to the 7-day article retention.
+interface Lesson {
+  link: string;
+  feedId: number;
+  title: string;
+  feedTitle: string;
+  imageUrl?: string;
+  summary: string[];                       // 3 to 5 key sentences
+  summarySource: 'extractive' | 'on-device';
+  cards: { index: number; text: string }[]; // 4 to 8 key-idea cards
+  wordCount: number;
+  readMinutes: number;
+  createdAt: number;
+  completedAt?: number;
+}
+
+// Store: learningDays (key: date, local YYYY-MM-DD). Drives the daily streak.
+interface LearningDay {
+  date: string;
+  lessonsCompleted: number;
+  updatedAt: number;
+}
 ```
+
+### 3a. Learning Feed Sources
+
+* `npm run catalog` runs `scripts/build-learning-catalog.mjs`. It downloads the Gutenberg offline catalog once, queries Wikidata once, and writes `public/learning/books.json` (60 books per interest). Run it at most once a week.
+* `src/learning/sources.ts` maps each interest to Wikipedia categories and Open Trivia DB categories. It holds identifiers only.
+* `src/learning/http.ts` limits hosts: Wikipedia at 4 concurrent requests, Open Trivia DB at one request every 5 s, and a 60 s block after HTTP 429.
+* `src/learning/bookWorker.ts` builds book ideas, summaries, and quotes in a module Web Worker. It imports pure modules only.
 
 ### 4. Design Tokens
 

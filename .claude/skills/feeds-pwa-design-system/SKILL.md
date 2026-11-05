@@ -11,6 +11,8 @@ Full specification lives in `docs/design-system.md`. `src/theme/` is the single 
 
 1. **No hardcoded colors, font families, or spacing values in components** - use Mantine theme tokens, component props (`color`, `variant`, `size`), or CSS variables (`var(--mantine-color-*)`) exclusively.
 2. If a component needs a design token in TypeScript, import from `src/theme/` - never inline the value.
+2a. **Light and dark follow the system** (`defaultColorScheme="auto"`). `tokens` are CSS variables (`var(--fd-*)`) emitted by `cssVariablesResolver` from the DARK and LIGHT palettes in `src/theme/index.ts`. For translucency use `alpha(tokens.x, percent)`; never append hex alpha digits to a token.
+2b. **Image slots never collapse**: use `ArticleImage` (`src/components/ArticleImage.tsx`). It falls back to a themed monogram placeholder when a feed has no image or the image fails; pass `backdrop` when text sits on top.
 3. Never override `MantineProvider` in child components.
 4. **Consult the Mantine component API first** (https://mantine.dev/core/) before building custom UI - use `Paper`, `Card`, `AppShell`, `TextInput`, `ActionIcon`, `Modal`, etc.
 5. Use Mantine hooks (`useMediaQuery`, `useDisclosure`) for responsive behavior and UI state.
@@ -50,7 +52,8 @@ Full specification lives in `docs/design-system.md`. `src/theme/` is the single 
 
 ## Screen Specifications
 
-1. **AppShell**: bottom tab navigation (mobile), left sidebar with grouped feed navigation (desktop). Tabs: Home, Bookmarks, Search, Settings.
+1. **AppShell**: bottom tab navigation (mobile), left sidebar with grouped feed navigation (desktop). Tabs: For You, Feeds, Explore, Library, Settings. Search is a header icon.
+1a. **For You feed**: one card per viewport with `scroll-snap-type: y mandatory`; 480px centered column on desktop with the action rail beside it, rail overlaid on mobile. ARIA feed pattern (`role="feed"`, cards are `article`s). At most 40 cards in the DOM.
 2. **Dashboard**: bento layout mirroring native DashboardView - FeaturedArticleCard (hero + overlay) + ArticleCard grid + CompactArticleRow list.
 3. **Feed Sidebar**: hierarchical - standalone feeds as rows, grouped feeds as expandable sections, selected feed shows indicator.
 4. **Article cards** (all respect `suppressHeroImage` per feed): FeaturedArticleCard (large hero + title overlay), ArticleCard (image, title, truncated description, date), CompactArticleRow (small thumbnail row).

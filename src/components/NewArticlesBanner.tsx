@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconNews, IconX } from '@tabler/icons-react';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 
 interface NewArticlesBannerProps {
   readonly count: number;
@@ -39,9 +39,8 @@ export function NewArticlesBanner({ count, onDismiss }: NewArticlesBannerProps) 
           alignItems: 'center',
           gap: 12,
           padding: '12px 16px',
-          backgroundColor: `${tokens.primary}F2`,
+          backgroundColor: alpha(tokens.primary, 95),
           borderRadius: 12,
-          boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
         }}
       >
         <IconNews size={18} color={tokens.onPrimary} />

@@ -4,8 +4,9 @@ import { IconSearch, IconX } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
 import { getAllArticles } from '../db';
 import { LoadingSkeleton, EmptyState } from '../components/StateViews';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 import { useResolvedImage } from '../hooks/useResolvedImage';
+import { ArticleImage, sourceLabel } from '../components/ArticleImage';
 
 const MAX_RECENT = 10;
 const STORAGE_KEY = 'feeds-recent-searches';
@@ -170,7 +171,7 @@ export function SearchScreen({ onSelectArticle }: SearchScreenProps) {
                   alignItems: 'center',
                   gap: 6,
                   padding: '10px 16px',
-                  backgroundColor: `${tokens.secondaryContainer}4D`,
+                  backgroundColor: alpha(tokens.secondaryContainer, 30),
                   border: `1px solid ${tokens.outlineVariant}`,
                   borderRadius: 999,
                   cursor: 'pointer',
@@ -243,7 +244,7 @@ function SearchResultRow({ article, onSelect }: SearchResultRowProps) {
         padding: 16,
         backgroundColor: tokens.surfaceContainerLow,
         borderRadius: 12,
-        border: `1px solid ${tokens.outlineVariant}4D`,
+        border: `1px solid ${alpha(tokens.outlineVariant, 30)}`,
         cursor: 'pointer',
       }}
     >
@@ -274,23 +275,17 @@ function SearchResultRow({ article, onSelect }: SearchResultRowProps) {
           </Text>
         )}
       </Box>
-      {imageUrl && (
-        <Box
-          style={{
-            width: 80,
-            height: 60,
-            borderRadius: 8,
-            overflow: 'hidden',
-            flexShrink: 0,
-          }}
-        >
-          <img
-            src={imageUrl}
-            alt=""
-            style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0)' }}
-          />
-        </Box>
-      )}
+      <Box
+        style={{
+          width: 80,
+          height: 60,
+          borderRadius: 8,
+          overflow: 'hidden',
+          flexShrink: 0,
+        }}
+      >
+        <ArticleImage src={imageUrl} label={sourceLabel(article.link)} compact grayscale />
+      </Box>
     </Box>
   );
 }

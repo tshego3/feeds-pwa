@@ -85,6 +85,7 @@ export function Dashboard({
       {featured && (
         <Box style={{ padding: '0 24px', marginBottom: 24 }}>
           <FeaturedArticleCard
+            sourceTitle={feedTitle}
             article={featured}
             onSelect={handleSelect}
             suppressHeroImage={suppressHeroImage}
@@ -100,6 +101,7 @@ export function Dashboard({
           <SimpleGrid cols={{ base: 1, sm: 2, xl: 3 }} spacing={16}>
             {gridItems.map((article) => (
               <ArticleCard
+            sourceTitle={feedTitle}
                 key={article.id}
                 article={article}
                 onSelect={handleSelect}
@@ -115,6 +117,7 @@ export function Dashboard({
         <Box style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           {compactItems.map((article) => (
             <CompactArticleRow
+            sourceTitle={feedTitle}
               key={article.id}
               article={article}
               onSelect={handleSelect}

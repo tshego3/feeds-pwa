@@ -2,7 +2,7 @@ import { Box, Text, UnstyledButton, Collapse } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 import type { FeedMenuItem, RssFeedModel } from '../types';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 
 interface FeedSidebarProps {
   readonly menuItems: readonly FeedMenuItem[];
@@ -69,7 +69,7 @@ function FeedRow({ feed, isSelected, onSelect, indented }: FeedRowProps) {
         width: '100%',
         padding: '8px 24px',
         paddingLeft: indented ? 36 : 24,
-        backgroundColor: isSelected ? `${tokens.secondaryContainer}4D` : 'transparent',
+        backgroundColor: isSelected ? alpha(tokens.secondaryContainer, 30) : 'transparent',
         color: isSelected ? tokens.primary : tokens.onSurfaceVariant,
         fontSize: 13,
         fontWeight: 500,

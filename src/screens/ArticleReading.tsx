@@ -1,9 +1,9 @@
 import { Box, Text, UnstyledButton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconArrowLeft, IconArticle, IconBookmark, IconBookmarkFilled, IconCheck, IconExternalLink, IconShare, IconTextSize, IconX } from '@tabler/icons-react';
+import { IconArrowLeft, IconArticle, IconBookmark, IconBookmarkFilled, IconCheck, IconExternalLink, IconSchool, IconShare, IconTextSize, IconX } from '@tabler/icons-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { FeedItem } from '../types';
-import { tokens } from '../theme';
+import type { FeedItem, LessonRequest } from '../types';
+import { alpha, tokens } from '../theme';
 import { isBookmarked, addBookmark, removeBookmark } from '../db';
 import { useResolvedImage } from '../hooks/useResolvedImage';
 
@@ -11,6 +11,7 @@ interface ArticleReadingProps {
   readonly article: FeedItem;
   readonly feedTitle: string;
   readonly onBack: () => void;
+  readonly onStartLesson: (request: LessonRequest) => void;
 }
 
 const FONT_SCALES = [1.0, 1.2, 1.4] as const;
@@ -21,7 +22,7 @@ const FRAME_TIMEOUT_MS = 8000;
 
 type FrameStatus = 'loading' | 'ready' | 'blocked';
 
-export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingProps) {
+export function ArticleReading({ article, feedTitle, onBack, onStartLesson }: ArticleReadingProps) {
   const [bookmarked, setBookmarked] = useState(false);
   const [fontScaleIndex, setFontScaleIndex] = useState(0);
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -144,6 +145,17 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
     }
   }
 
+  function startLesson() {
+    onStartLesson({
+      link: article.link,
+      feedId: article.feedId,
+      title: article.title,
+      feedTitle,
+      description: article.description,
+      imageUrl,
+    });
+  }
+
   function cycleFontSize() {
     setFontScaleIndex((prev) => (prev + 1) % FONT_SCALES.length);
   }
@@ -169,7 +181,7 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
             alignItems: 'center',
             gap: 20,
             padding: '10px 24px',
-            backgroundColor: `${tokens.surfaceContainerLow}CC`,
+            backgroundColor: alpha(tokens.surfaceContainerLow, 80),
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: `1px solid ${tokens.outlineVariant}`,
@@ -227,6 +239,23 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
                   backgroundColor: tokens.outlineVariant,
                 }}
               />
+
+              <UnstyledButton
+                onClick={startLesson}
+                aria-label="Learn: turn this article into a lesson"
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: tokens.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <IconSchool size={18} />
+                {showLabels && 'Learn'}
+              </UnstyledButton>
 
               <UnstyledButton
                 onClick={openReader}
@@ -497,7 +526,7 @@ export function ArticleReading({ article, feedTitle, onBack }: ArticleReadingPro
               right: 16,
               padding: 10,
               borderRadius: 999,
-              backgroundColor: `${tokens.surfaceContainerLow}CC`,
+              backgroundColor: alpha(tokens.surfaceContainerLow, 80),
               color: tokens.primary,
               display: 'flex',
             }}

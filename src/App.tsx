@@ -1,23 +1,26 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { AppShell, Box, UnstyledButton, Text, Overlay, ScrollArea } from '@mantine/core';
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
+import { AppShell, Box, UnstyledButton, Text, Overlay, ScrollArea, ActionIcon } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconSearch, IconMenu2 } from '@tabler/icons-react';
-import type { RssFeedModel, FeedMenuItem, FeedItem } from './types';
-import { tokens } from './theme';
-import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed, pruneExpiredArticles } from './db';
+import type { RssFeedModel, FeedMenuItem, FeedItem, LessonRequest, AppScreen } from './types';
+import { alpha, tokens } from './theme';
+import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed, pruneExpiredArticles, pruneSeen } from './db';
+import { pruneCatalogCache } from './learning/cache';
 import { fetchFeedXml, parseRssXml } from './feed';
 import { FeedSidebar } from './components/FeedSidebar';
 import { PrimaryNav, navTabs } from './components/PrimaryNav';
 import { Dashboard } from './screens/Dashboard';
 import { ArticleReading } from './screens/ArticleReading';
 import { SearchScreen } from './screens/Search';
-import { BookmarksScreen } from './screens/Bookmarks';
 import { SettingsScreen } from './screens/Settings';
 import { NewArticlesBanner } from './components/NewArticlesBanner';
+import { UpgradeBlockedBanner } from './components/UpgradeBlockedBanner';
+import { LoadingSkeleton } from './components/StateViews';
 import { useRouter } from './hooks/useRouter';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { useAutoRefresh } from './hooks/useAutoRefresh';
 import { useScrollRestoration } from './hooks/useScrollRestoration';
+import { useDbUpgradeBlocked } from './hooks/useDbUpgradeBlocked';
 import {
   showNewArticlesNotification,
   getNotificationPreference,
@@ -33,9 +36,21 @@ import {
   setLastFeedId,
 } from './preferences';
 
+// Learning screens load on demand (Readability and the lesson UI stay out of
+// the main bundle); the service worker precaches their chunks for offline use.
+const ForYouScreen = lazy(() => import('./screens/ForYou').then((m) => ({ default: m.ForYouScreen })));
+const ExploreScreen = lazy(() => import('./screens/Explore').then((m) => ({ default: m.ExploreScreen })));
+const LibraryScreen = lazy(() => import('./screens/Library').then((m) => ({ default: m.LibraryScreen })));
+
+const SEEN_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+// Screens that show the mobile top bar (feed drawer and search).
+const TOP_BAR_SCREENS: ReadonlySet<AppScreen> = new Set<AppScreen>(['feeds', 'explore', 'library']);
+const LessonView = lazy(() => import('./screens/LessonView').then((m) => ({ default: m.LessonView })));
+
 export function App() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const { screen, navigate } = useRouter();
+  const upgradeBlocked = useDbUpgradeBlocked();
 
   const [menuItems, setMenuItems] = useState<FeedMenuItem[]>([]);
   const [selectedFeed, setSelectedFeed] = useState<RssFeedModel | null>(null);
@@ -47,6 +62,10 @@ export function App() {
   const [showMobileDrawer, setShowMobileDrawer] = useState(false);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(() => getAutoRefreshPreference());
   const [showImages, setShowImages] = useState(() => getShowImagesPreference());
+  const [lessonRequest, setLessonRequest] = useState<LessonRequest | null>(null);
+  const [learningRefreshKey, setLearningRefreshKey] = useState(0);
+  const closeLesson = useCallback(() => setLessonRequest(null), []);
+  const onLessonCompleted = useCallback(() => setLearningRefreshKey((n) => n + 1), []);
 
   // Shared silent-refresh pipeline: fetch → parse → diff against the cache →
   // persist → update the visible list and notify when something is new.
@@ -101,7 +120,7 @@ export function App() {
 
   // Restore scroll position when returning to a previously-viewed feed
   useScrollRestoration(
-    screen === 'home' && selectedFeed ? `home-${selectedFeed.id}` : null,
+    screen === 'feeds' && selectedFeed ? `home-${selectedFeed.id}` : null,
     !isLoading,
   );
 
@@ -118,6 +137,9 @@ export function App() {
 
   async function loadConfig() {
     void pruneExpiredArticles();
+    // Learning caches: housekeeping only, so failures are safe to ignore.
+    void pruneCatalogCache().catch(() => undefined);
+    void pruneSeen(Date.now() - SEEN_RETENTION_MS).catch(() => undefined);
 
     const empty = await isDbEmpty();
     if (empty) {
@@ -151,7 +173,8 @@ export function App() {
     const lastFeedId = getLastFeedId();
     const initialFeed = subs.find((f) => f.id === lastFeedId) ?? subs[0];
     if (initialFeed) {
-      selectFeed(initialFeed);
+      // Load the feed without leaving the screen the user opened.
+      void selectFeed(initialFeed, false);
     }
   }
 
@@ -182,11 +205,11 @@ export function App() {
     return [...singles, ...groupItems];
   }
 
-  const selectFeed = useCallback(async (feed: RssFeedModel) => {
+  const selectFeed = useCallback(async (feed: RssFeedModel, userInitiated = true) => {
     setSelectedFeed(feed);
     setLastFeedId(feed.id);
     setShowMobileDrawer(false);
-    navigate('home');
+    if (userInitiated) navigate('feeds');
     setReadingArticle(null);
     setIsLoading(true);
     setErrorMessage(null);
@@ -231,9 +254,10 @@ export function App() {
             borderRight: `1px solid ${tokens.outlineVariant}`,
           }}
         >
-          <Box style={{ padding: '32px 24px 24px' }}>
+          <Box style={{ padding: '32px 16px 24px 24px', display: 'flex', alignItems: 'center' }}>
             <Text
               style={{
+                flex: 1,
                 fontSize: 32,
                 fontWeight: 700,
                 letterSpacing: '-0.05em',
@@ -242,6 +266,9 @@ export function App() {
             >
               feeds
             </Text>
+            <ActionIcon variant="subtle" size={44} aria-label="Search" onClick={() => navigate('search')} style={{ color: tokens.primary }}>
+              <IconSearch size={20} stroke={1.5} />
+            </ActionIcon>
           </Box>
           <ScrollArea style={{ flex: 1 }}>
             <PrimaryNav current={screen} onNavigate={navigate} />
@@ -262,13 +289,15 @@ export function App() {
       )}
 
       <AppShell.Main
-        style={{ paddingBottom: isDesktop ? 0 : 60 }}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
+        style={{ paddingBottom: isDesktop ? 0 : 'calc(64px + env(safe-area-inset-bottom))' }}
+        // The For You feed scrolls inside its own container; a downward swipe
+        // there must move the feed, not trigger pull-to-refresh.
+        onTouchStart={screen === 'feeds' ? onTouchStart : undefined}
+        onTouchMove={screen === 'feeds' ? onTouchMove : undefined}
+        onTouchEnd={screen === 'feeds' ? onTouchEnd : undefined}
       >
         {/* Mobile top bar with hamburger */}
-        {!isDesktop && screen === 'home' && (
+        {!isDesktop && TOP_BAR_SCREENS.has(screen) && (
           <Box
             style={{
               position: 'sticky',
@@ -279,7 +308,7 @@ export function App() {
               gap: 12,
               padding: '12px 16px',
               borderBottom: `1px solid ${tokens.outlineVariant}`,
-              backgroundColor: `${tokens.surface}CC`,
+              backgroundColor: alpha(tokens.surface, 80),
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
             }}
@@ -367,14 +396,16 @@ export function App() {
           </Box>
         )}
 
-        {screen === 'home' && newArticleCount > 0 && (
+        {upgradeBlocked && <UpgradeBlockedBanner />}
+
+        {screen === 'feeds' && newArticleCount > 0 && (
           <NewArticlesBanner
             count={newArticleCount}
             onDismiss={() => setNewArticleCount(0)}
           />
         )}
 
-        {screen === 'home' && (
+        {screen === 'feeds' && (
           <Dashboard
             items={articles}
             isLoading={isLoading}
@@ -385,8 +416,22 @@ export function App() {
             onRetry={() => selectedFeed && selectFeed(selectedFeed)}
           />
         )}
+        {screen === 'for-you' && (
+          <Suspense fallback={<LoadingSkeleton />}>
+            <ForYouScreen onOpenArticle={handleSelectArticle} onOpenLesson={setLessonRequest} />
+          </Suspense>
+        )}
+        {screen === 'explore' && (
+          <Suspense fallback={<LoadingSkeleton />}>
+            <ExploreScreen onOpenLesson={setLessonRequest} />
+          </Suspense>
+        )}
+        {screen === 'library' && (
+          <Suspense fallback={<LoadingSkeleton />}>
+            <LibraryScreen refreshKey={learningRefreshKey} onOpenLesson={setLessonRequest} onSelectArticle={handleSelectArticle} />
+          </Suspense>
+        )}
         {screen === 'search' && <SearchScreen onSelectArticle={handleSelectArticle} />}
-        {screen === 'bookmarks' && <BookmarksScreen onSelectArticle={handleSelectArticle} />}
         {screen === 'settings' && (
           <SettingsScreen
             autoRefreshEnabled={autoRefreshEnabled}
@@ -406,18 +451,21 @@ export function App() {
       {/* Mobile bottom tabs */}
       {!isDesktop && (
         <Box
+          component="nav"
+          aria-label="Main"
           style={{
             position: 'fixed',
             bottom: 0,
             left: 0,
             right: 0,
             display: 'flex',
-            backgroundColor: `${tokens.surfaceContainerLow}CC`,
+            backgroundColor: alpha(tokens.surfaceContainerLow, 80),
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             borderTop: `1px solid ${tokens.outlineVariant}`,
             zIndex: 100,
-            padding: '8px 0',
+            // Clear the iPhone home indicator in standalone mode.
+            padding: '8px 0 calc(8px + env(safe-area-inset-bottom))',
           }}
         >
           {navTabs.map((tab) => {
@@ -426,6 +474,7 @@ export function App() {
               <UnstyledButton
                 key={tab.id}
                 onClick={() => navigate(tab.id)}
+                aria-current={isActive ? 'page' : undefined}
                 style={{
                   flex: 1,
                   display: 'flex',
@@ -442,7 +491,7 @@ export function App() {
                     justifyContent: 'center',
                     padding: '4px 12px',
                     borderRadius: 12,
-                    backgroundColor: isActive ? `${tokens.secondaryContainer}80` : 'transparent',
+                    backgroundColor: isActive ? alpha(tokens.secondaryContainer, 50) : 'transparent',
                   }}
                 >
                   <tab.icon size={22} stroke={1.5} />
@@ -461,10 +510,33 @@ export function App() {
       {readingArticle && (
         <ArticleReading
           article={readingArticle}
-          feedTitle={selectedFeed?.title ?? 'Article'}
+          // For You, Search, and Library open articles from any feed.
+          feedTitle={feedTitleFor(menuItems, readingArticle.feedId) ?? selectedFeed?.title ?? 'Article'}
           onBack={handleBack}
+          onStartLesson={setLessonRequest}
         />
+      )}
+
+      {/* Lesson overlay sits above the reading view so either can open it. */}
+      {lessonRequest && (
+        <Suspense fallback={null}>
+          <LessonView
+            key={lessonRequest.link}
+            request={lessonRequest}
+            onClose={closeLesson}
+            onCompleted={onLessonCompleted}
+          />
+        </Suspense>
       )}
     </AppShell>
   );
+}
+
+function feedTitleFor(items: readonly FeedMenuItem[], feedId: number): string | undefined {
+  for (const item of items) {
+    const feeds = item.type === 'single' ? [item.feed] : item.feeds;
+    const match = feeds.find((feed) => feed.id === feedId);
+    if (match) return match.title;
+  }
+  return undefined;
 }

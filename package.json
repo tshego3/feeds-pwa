@@ -5,20 +5,27 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/build-learning-catalog.mjs --auto",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint src/",
-    "test": "vitest run"
+    "test": "vitest run",
+    "catalog": "node scripts/build-learning-catalog.mjs"
   },
   "dependencies": {
     "@mantine/core": "9.2.2",
     "@mantine/hooks": "9.2.2",
     "@mantine/spotlight": "9.2.2",
+    "@mozilla/readability": "0.6.0",
     "@tabler/icons-react": "3.44.0",
     "idb": "8.0.3",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "workbox-precaching": "7.4.1"
+    "workbox-cacheable-response": "7.4.1",
+    "workbox-expiration": "7.4.1",
+    "workbox-precaching": "7.4.1",
+    "workbox-routing": "7.4.1",
+    "workbox-strategies": "7.4.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

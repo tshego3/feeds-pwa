@@ -1,8 +1,9 @@
 import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconBookmark, IconBookmarkFilled, IconExternalLink } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 import { useResolvedImage } from '../hooks/useResolvedImage';
+import { ArticleImage, sourceLabel } from './ArticleImage';
 
 interface FeaturedArticleCardProps {
   readonly article: FeedItem;
@@ -10,6 +11,8 @@ interface FeaturedArticleCardProps {
   readonly isBookmarked?: boolean;
   readonly onToggleBookmark?: (article: FeedItem) => void;
   readonly suppressHeroImage?: boolean;
+  /** Feed name for the image placeholder when the article has no image. */
+  readonly sourceTitle?: string;
 }
 
 export function FeaturedArticleCard({
@@ -18,6 +21,7 @@ export function FeaturedArticleCard({
   isBookmarked,
   onToggleBookmark,
   suppressHeroImage,
+  sourceTitle,
 }: FeaturedArticleCardProps) {
   const imageUrl = useResolvedImage(article, suppressHeroImage);
   const formattedDate = article.pubDate ? formatDate(article.pubDate) : '';
@@ -33,28 +37,20 @@ export function FeaturedArticleCard({
         overflow: 'hidden',
         borderRadius: 16,
         border: `1px solid ${tokens.outlineVariant}`,
-        minHeight: imageUrl ? 380 : 200,
+        minHeight: suppressHeroImage ? 200 : 380,
         cursor: 'pointer',
       }}
     >
-      {/* Background image (grayscale) */}
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            filter: 'saturate(0)',
-          }}
-        />
+      {/* Background image (grayscale), or the source placeholder when the
+          feed has no usable image */}
+      {!suppressHeroImage && (
+        <Box style={{ position: 'absolute', inset: 0 }}>
+          <ArticleImage src={imageUrl} label={sourceLabel(article.link, sourceTitle)} grayscale backdrop />
+        </Box>
       )}
 
-      {/* Fallback solid background */}
-      {!imageUrl && (
+      {/* Solid background when hero images are switched off */}
+      {suppressHeroImage && (
         <Box
           style={{
             position: 'absolute',
@@ -69,7 +65,7 @@ export function FeaturedArticleCard({
         style={{
           position: 'absolute',
           inset: 0,
-          background: `linear-gradient(to top, ${tokens.background} 0%, ${tokens.background}66 40%, transparent 100%)`,
+          background: `linear-gradient(to top, ${tokens.background} 0%, ${alpha(tokens.background, 40)} 40%, transparent 100%)`,
         }}
       />
 

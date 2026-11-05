@@ -1,7 +1,12 @@
 /// <reference lib="webworker" />
 
 import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { fetchFeedXml } from './feed/fetcher';
+import { BOOK_PURPOSE, LESSON_PURPOSE, PROXY_ORIGIN } from './feed/proxy';
 import { parseFeedXmlSw } from './feed/swParser';
 import type { FeedItem } from './types';
 
@@ -19,18 +24,90 @@ const DB_NAME = 'feeds-db';
 const REFRESH_BUDGET_MS = 20_000;
 const REFRESH_CONCURRENCY = 6;
 
+const DAY_SECONDS = 24 * 60 * 60;
+const IMAGE_CACHE = 'images-v2';
+const LESSON_HTML_CACHE = 'lesson-html-v1';
+const BOOK_TEXT_CACHE = 'book-text-v1';
+const WIKI_FEATURED_CACHE = 'wiki-featured-v1';
+const WIKI_ORIGIN = 'https://en.wikipedia.org';
+// images-v1 was a hand-rolled cache with no size limit. Workbox expiration
+// cannot track its entries, so it is dropped rather than migrated.
+// wiki-v1 held Wikipedia API bodies that IndexedDB already caches.
+const LEGACY_CACHES: readonly string[] = ['images-v1', 'wiki-v1'];
+
 // Workbox injects the precache manifest at build time
 precacheAndRoute(self.__WB_MANIFEST);
+
+// Images: cache first. Status 0 admits opaque cross-origin images, which
+// cost extra quota, so the entry cap and quota purge matter here.
+registerRoute(
+  ({ request }) => request.destination === 'image',
+  new CacheFirst({
+    cacheName: IMAGE_CACHE,
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+      new ExpirationPlugin({ maxEntries: 200, maxAgeSeconds: 30 * DAY_SECONDS, purgeOnQuotaError: true }),
+    ],
+  }),
+);
+
+// Lesson source pages: cache first, so a lesson can be rebuilt offline. Only
+// proxy requests tagged purpose=lesson match. Feed XML and og:image lookups
+// carry no purpose and stay on the network, so feeds never go stale.
+registerRoute(
+  ({ url }) => url.origin === PROXY_ORIGIN && url.searchParams.get('purpose') === LESSON_PURPOSE,
+  new CacheFirst({
+    cacheName: LESSON_HTML_CACHE,
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 14 * DAY_SECONDS, purgeOnQuotaError: true }),
+    ],
+  }),
+);
+
+// Book text from Gutenberg mirrors (via the proxy, tagged purpose=book):
+// public-domain text that never changes, so cache first for 60 days.
+registerRoute(
+  ({ url }) => url.origin === PROXY_ORIGIN && url.searchParams.get('purpose') === BOOK_PURPOSE,
+  new CacheFirst({
+    cacheName: BOOK_TEXT_CACHE,
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      new ExpirationPlugin({ maxEntries: 30, maxAgeSeconds: 60 * DAY_SECONDS, purgeOnQuotaError: true }),
+    ],
+  }),
+);
+
+// Wikipedia topic lists are not routed: learning/cache.ts keeps them in
+// IndexedDB with a TTL and an offline fallback. A stale-while-revalidate
+// layer here would hand that TTL refresh the old copy, stamped as fresh.
+
+// Wikipedia daily featured card: prefer today's, fall back to cached.
+registerRoute(
+  ({ url }) => url.origin === WIKI_ORIGIN && url.pathname.startsWith('/api/rest_v1/feed/featured/'),
+  new NetworkFirst({
+    cacheName: WIKI_FEATURED_CACHE,
+    networkTimeoutSeconds: 5,
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      new ExpirationPlugin({ maxEntries: 7, purgeOnQuotaError: true }),
+    ],
+  }),
+);
+// Open Trivia DB is not routed: questions are pooled in IndexedDB instead.
 
 self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    Promise.all([self.clients.claim(), ...LEGACY_CACHES.map((name) => caches.delete(name))]),
+  );
 });
 
-// Runtime caching for feed XML and images
+// Navigation fallback. Images and lesson pages use the Workbox routes above;
+// this listener must not call respondWith for those requests.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
@@ -40,23 +117,6 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() => caches.match('/feeds-pwa/index.html') as Promise<Response>),
-    );
-    return;
-  }
-
-  // Images — cache first
-  if (request.destination === 'image') {
-    event.respondWith(
-      caches.open('images-v1').then((cache) =>
-        cache.match(request).then(
-          (cached) =>
-            cached ??
-            fetch(request).then((res) => {
-              if (res.ok) cache.put(request, res.clone());
-              return res;
-            }),
-        ),
-      ),
     );
     return;
   }

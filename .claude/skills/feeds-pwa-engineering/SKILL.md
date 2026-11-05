@@ -35,6 +35,8 @@ Components (React/Mantine) --reads--> Hooks/State --calls--> Services (src/feed/
 | Types | Pure interfaces, zero runtime deps | `src/types/` |
 | Services (DB) | IndexedDB CRUD via `idb`. Pure I/O | `src/db/` |
 | Services (Feed) | RSS fetch with proxy fallback, XML parsing, OpenGraph | `src/feed/` |
+| Services (Learning) | Lessons, book summaries, catalog, Wikipedia, trivia, feed mixing, saved ideas, streaks, speech | `src/learning/` |
+| Build scripts | Catalog generator (Node built-ins only, plain ESM with JSDoc) | `scripts/` |
 | Theme | Centralized Mantine theme override (Monolithic Clarity) | `src/theme/` |
 | Components | Presentational, receive data via props, no direct service calls | `src/components/` |
 | Screens | Page-level composition, orchestrate services via hooks | `src/screens/` |
@@ -95,8 +97,9 @@ Components (React/Mantine) --reads--> Hooks/State --calls--> Services (src/feed/
 1. Use `npm` only; commit `package-lock.json`.
 2. All dependency versions pinned exactly (no `^`/`~`) - `.npmrc` has `save-exact=true`.
 3. Justify every new dependency; prefer lightweight, single-purpose, MIT/Apache-licensed packages. Vet before adoption: verify on npmjs.com, legitimate publisher, no CVEs, active maintenance. Do not trust AI-suggested package names blindly.
-4. Core deps: `@mantine/core`, `@mantine/hooks`, `@mantine/spotlight`, `idb`, `workbox-precaching`, `@tabler/icons-react`.
+4. Core deps: `@mantine/core`, `@mantine/hooks`, `@mantine/spotlight`, `idb`, `workbox-precaching`, `workbox-routing`, `workbox-strategies`, `workbox-expiration`, `workbox-cacheable-response`, `@mozilla/readability`, `@tabler/icons-react`.
 5. Run `npm run build` after changes to verify zero TypeScript errors; `vite preview` to verify production build.
+6. `src/learning/bookWorker.ts` runs in a Web Worker: import pure modules only (no `src/db`, no React).
 
 ## Deployment (GitHub Pages)
 

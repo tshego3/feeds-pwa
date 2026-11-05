@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { Box, Text, UnstyledButton } from '@mantine/core';
-import { IconHome, IconSearch, IconBookmark, IconSettings } from '@tabler/icons-react';
+import { IconSparkles, IconRss, IconCompass, IconBooks, IconSettings } from '@tabler/icons-react';
 import type { AppScreen } from '../types';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 
 export interface NavTab {
   readonly id: AppScreen;
-  readonly icon: typeof IconHome;
+  readonly icon: typeof IconSparkles;
   readonly label: string;
 }
 
-// Single source of truth for the four top-level destinations, shared by the
+// Single source of truth for the top-level destinations, shared by the
 // desktop/tablet sidebar and the mobile bottom tab bar.
 export const navTabs: readonly NavTab[] = [
-  { id: 'home', icon: IconHome, label: 'Home' },
-  { id: 'search', icon: IconSearch, label: 'Search' },
-  { id: 'bookmarks', icon: IconBookmark, label: 'Bookmarks' },
+  { id: 'for-you', icon: IconSparkles, label: 'For You' },
+  { id: 'feeds', icon: IconRss, label: 'Feeds' },
+  { id: 'explore', icon: IconCompass, label: 'Explore' },
+  { id: 'library', icon: IconBooks, label: 'Library' },
   { id: 'settings', icon: IconSettings, label: 'Settings' },
 ];
 
@@ -65,7 +66,7 @@ function NavRow({ tab, isActive, onSelect }: NavRowProps) {
         borderLeft: `2px solid ${isActive ? tokens.accent : 'transparent'}`,
         paddingLeft: 22,
         backgroundColor: isActive
-          ? `${tokens.secondaryContainer}4D`
+          ? alpha(tokens.secondaryContainer, 30)
           : hovered
             ? tokens.elevated
             : 'transparent',

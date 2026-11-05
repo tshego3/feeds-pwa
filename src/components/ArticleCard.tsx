@@ -1,13 +1,16 @@
 import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
 import type { FeedItem } from '../types';
-import { tokens } from '../theme';
+import { alpha, tokens } from '../theme';
 import { useResolvedImage } from '../hooks/useResolvedImage';
+import { ArticleImage, sourceLabel } from './ArticleImage';
 
 interface ArticleCardProps {
   readonly article: FeedItem;
   readonly onSelect: (article: FeedItem) => void;
   readonly suppressHeroImage?: boolean;
+  /** Feed name for the image placeholder when the article has no image. */
+  readonly sourceTitle?: string;
   readonly isBookmarked?: boolean;
   readonly onToggleBookmark?: (article: FeedItem) => void;
 }
@@ -16,6 +19,7 @@ export function ArticleCard({
   article,
   onSelect,
   suppressHeroImage,
+  sourceTitle,
   isBookmarked,
   onToggleBookmark,
 }: ArticleCardProps) {
@@ -36,8 +40,9 @@ export function ArticleCard({
         gap: 12,
       }}
     >
-      {/* Thumbnail (grayscale) */}
-      {imageUrl && (
+      {/* Thumbnail (grayscale). Always present unless images are switched
+          off, so grid cards keep one shape when a feed ships no image. */}
+      {!suppressHeroImage && (
         <Box
           style={{
             height: 180,
@@ -48,16 +53,7 @@ export function ArticleCard({
             marginTop: -16,
           }}
         >
-          <img
-            src={imageUrl}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              filter: 'saturate(0)',
-            }}
-          />
+          <ArticleImage src={imageUrl} label={sourceLabel(article.link, sourceTitle)} grayscale />
         </Box>
       )}
 
@@ -125,12 +121,15 @@ interface CompactArticleRowProps {
   readonly article: FeedItem;
   readonly onSelect: (article: FeedItem) => void;
   readonly suppressHeroImage?: boolean;
+  /** Feed name for the image placeholder when the article has no image. */
+  readonly sourceTitle?: string;
 }
 
 export function CompactArticleRow({
   article,
   onSelect,
   suppressHeroImage,
+  sourceTitle,
 }: CompactArticleRowProps) {
   const imageUrl = useResolvedImage(article, suppressHeroImage);
   const formattedDate = formatDate(article.pubDate);
@@ -143,7 +142,7 @@ export function CompactArticleRow({
         padding: 16,
         backgroundColor: tokens.surfaceContainerLow,
         borderRadius: 12,
-        border: `1px solid ${tokens.outlineVariant}4D`,
+        border: `1px solid ${alpha(tokens.outlineVariant, 30)}`,
         display: 'flex',
         gap: 16,
         alignItems: 'flex-start',
@@ -189,7 +188,7 @@ export function CompactArticleRow({
       </Box>
 
       {/* Thumbnail (grayscale, reduced opacity) */}
-      {imageUrl && (
+      {!suppressHeroImage && (
         <Box
           style={{
             width: 80,
@@ -199,17 +198,7 @@ export function CompactArticleRow({
             flexShrink: 0,
           }}
         >
-          <img
-            src={imageUrl}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              filter: 'saturate(0)',
-              opacity: 0.7,
-            }}
-          />
+          <ArticleImage src={imageUrl} label={sourceLabel(article.link, sourceTitle)} compact grayscale opacity={0.7} />
         </Box>
       )}
     </Box>

@@ -1,0 +1,3382 @@
+{
+  "generatedAt": "2026-11-05T19:57:10.294Z",
+  "catalogDate": "2026-11-01",
+  "interests": {
+    "philosophy": [
+      {
+        "gutenbergId": 4280,
+        "title": "The Critique of Pure Reason",
+        "author": "Immanuel Kant",
+        "interest": "philosophy",
+        "sitelinks": 60
+      },
+      {
+        "gutenbergId": 2680,
+        "title": "Meditations",
+        "author": "Marcus Aurelius",
+        "interest": "philosophy",
+        "sitelinks": 51
+      },
+      {
+        "gutenbergId": 5683,
+        "title": "The Critique of Practical Reason",
+        "author": "Immanuel Kant",
+        "interest": "philosophy",
+        "sitelinks": 33
+      },
+      {
+        "gutenbergId": 18269,
+        "title": "Pascal's Pensées",
+        "author": "Blaise Pascal",
+        "interest": "philosophy",
+        "sitelinks": 28
+      },
+      {
+        "gutenbergId": 38145,
+        "title": "Human, All Too Human: A Book for Free Spirits",
+        "author": "Friedrich Wilhelm Nietzsche",
+        "interest": "philosophy",
+        "sitelinks": 28
+      },
+      {
+        "gutenbergId": 4705,
+        "title": "A Treatise of Human Nature",
+        "author": "David Hume",
+        "interest": "philosophy",
+        "sitelinks": 26
+      },
+      {
+        "gutenbergId": 14209,
+        "title": "The Kybalion A Study of The Hermetic Philosophy of Ancient Egypt and Greece",
+        "author": "Three Initiates",
+        "interest": "philosophy",
+        "sitelinks": 25
+      },
+      {
+        "gutenbergId": 5827,
+        "title": "The Problems of Philosophy",
+        "author": "Bertrand Russell",
+        "interest": "philosophy",
+        "sitelinks": 20
+      },
+      {
+        "gutenbergId": 8910,
+        "title": "The System of Nature, or, the Laws of the Moral and Physical World. Volume 2",
+        "author": "Holbach",
+        "interest": "philosophy",
+        "sitelinks": 18
+      },
+      {
+        "gutenbergId": 4583,
+        "title": "Dialogues Concerning Natural Religion",
+        "author": "David Hume",
+        "interest": "philosophy",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 25929,
+        "title": "Daemonologie.",
+        "author": "James I",
+        "interest": "philosophy",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 57260,
+        "title": "The Fable of the Bees; Or, Private Vices, Public Benefits",
+        "author": "Bernard Mandeville",
+        "interest": "philosophy",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 64908,
+        "title": "What Is Art?",
+        "author": "Tolstoy",
+        "interest": "philosophy",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 935,
+        "title": "Self Help; with Illustrations of Conduct and Perseverance",
+        "author": "Samuel Smiles",
+        "interest": "philosophy",
+        "sitelinks": 10
+      },
+      {
+        "gutenbergId": 4320,
+        "title": "An Enquiry Concerning the Principles of Morals",
+        "author": "David Hume",
+        "interest": "philosophy",
+        "sitelinks": 9
+      },
+      {
+        "gutenbergId": 4507,
+        "title": "As a man thinketh",
+        "author": "James Allen",
+        "interest": "philosophy",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 56852,
+        "title": "Time and Free Will: An Essay on the Immediate Data of Consciousness",
+        "author": "Henri Bergson",
+        "interest": "philosophy",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 65903,
+        "title": "Psychology of the Unconscious A Study of the Transformations and Symbolisms of the Libido. A Contribution to the Histor…",
+        "author": "C. G. Jung",
+        "interest": "philosophy",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 439,
+        "title": "The Vital Message",
+        "author": "Arthur Conan Doyle",
+        "interest": "philosophy",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 37423,
+        "title": "How We Think",
+        "author": "John Dewey",
+        "interest": "philosophy",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 59,
+        "title": "Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences",
+        "author": "René Descartes",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 455,
+        "title": "The University of Hard Knocks",
+        "author": "Ralph Albert Parlette",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 563,
+        "title": "The Planet Mars and Its Inhabitants, a Psychic Revelation",
+        "author": "J. L. Kennon",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 743,
+        "title": "Thoughts on Man, His Nature, Productions and Discoveries Interspersed with Some Particulars Respecting the Author",
+        "author": "William Godwin",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 919,
+        "title": "Ethics — Part 1",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 920,
+        "title": "Ethics — Part 2",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 926,
+        "title": "Ten Thousand Dreams Interpreted; Or, What's in a Dream A Scientific and Practical Exposition",
+        "author": "Gustavus Hindman Miller",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 948,
+        "title": "Ethics — Part 3",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 971,
+        "title": "Ethics — Part 4",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 975,
+        "title": "Ethics — Part 5",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 989,
+        "title": "Theologico-Political Treatise — Part 1",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 990,
+        "title": "Theologico-Political Treatise — Part 2",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 991,
+        "title": "A Theological-Political Treatise [Part III]",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 992,
+        "title": "A Theological-Political Treatise [Part IV]",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1016,
+        "title": "On the Improvement of the Understanding",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1271,
+        "title": "Bygone Beliefs: Being a Series of Excursions in the Byways of Thought",
+        "author": "H. Stanley Redgrove",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1275,
+        "title": "Alexandria and Her Schools Four Lectures Delivered at the Philosophical Institution, Edinburgh",
+        "author": "Charles Kingsley",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1347,
+        "title": "A New Philosophy",
+        "author": "Edouard Le Roy",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1398,
+        "title": "The Doré Lectures Being Sunday addresses at the Doré Gallery, London, given in connection with the Higher Thought Centre",
+        "author": "T. Troward",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1638,
+        "title": "The New Revelation",
+        "author": "Arthur Conan Doyle",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1998,
+        "title": "Thus Spake Zarathustra: A Book for All and None",
+        "author": "Friedrich Wilhelm Nietzsche",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2033,
+        "title": "The Unknown Guest",
+        "author": "Maurice Maeterlinck",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2274,
+        "title": "How to Live on 24 Hours a Day",
+        "author": "Arnold Bennett",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2412,
+        "title": "The Categories",
+        "author": "Aristotle",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2526,
+        "title": "The Yoga Sutras of Patanjali: The Book of the Spiritual Man",
+        "author": "Patañjali",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2529,
+        "title": "The Analysis of Mind",
+        "author": "Bertrand Russell",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2541,
+        "title": "Character",
+        "author": "Samuel Smiles",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2940,
+        "title": "Evolution and Ethics, and Other Essays",
+        "author": "Thomas Henry Huxley",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3150,
+        "title": "Human Nature, and Other Sermons",
+        "author": "Joseph Butler",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3290,
+        "title": "Valerius Terminus: Of the Interpretation of Nature",
+        "author": "Francis Bacon",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3800,
+        "title": "Ethics",
+        "author": "Benedictus de Spinoza",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4095,
+        "title": "Plato and Platonism",
+        "author": "Walter Pater",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4225,
+        "title": "First and Last Things: A Confession of Faith and Rule of Life",
+        "author": "H. G. Wells",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4278,
+        "title": "An Introduction to Yoga",
+        "author": "Annie Besant",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4363,
+        "title": "Beyond Good and Evil",
+        "author": "Friedrich Wilhelm Nietzsche",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4391,
+        "title": "Selections from the Principles of Philosophy",
+        "author": "René Descartes",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4611,
+        "title": "Where No Fear Was: A Book About Fear",
+        "author": "Arthur Christopher Benson",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4701,
+        "title": "The Ethics of the Dust",
+        "author": "John Ruskin",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4722,
+        "title": "An Essay Towards a New Theory of Vision",
+        "author": "George Berkeley",
+        "interest": "philosophy",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4723,
+        "title": "A Treatise Concerning the Principles of Human Knowledge",
+        "author": "George Berkeley",
+        "interest": "philosophy",
+        "sitelinks": 0
+      }
+    ],
+    "psychology": [
+      {
+        "gutenbergId": 14209,
+        "title": "The Kybalion A Study of The Hermetic Philosophy of Ancient Egypt and Greece",
+        "author": "Three Initiates",
+        "interest": "psychology",
+        "sitelinks": 25
+      },
+      {
+        "gutenbergId": 621,
+        "title": "The Varieties of Religious Experience: A Study in Human Nature",
+        "author": "William James",
+        "interest": "psychology",
+        "sitelinks": 17
+      },
+      {
+        "gutenbergId": 1227,
+        "title": "The Expression of the Emotions in Man and Animals",
+        "author": "Charles Darwin",
+        "interest": "psychology",
+        "sitelinks": 17
+      },
+      {
+        "gutenbergId": 67332,
+        "title": "Psychopathology of Everyday Life",
+        "author": "Sigmund Freud",
+        "interest": "psychology",
+        "sitelinks": 17
+      },
+      {
+        "gutenbergId": 25929,
+        "title": "Daemonologie.",
+        "author": "James I",
+        "interest": "psychology",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 445,
+        "title": "The crowd",
+        "author": "Gustave Le Bon",
+        "interest": "psychology",
+        "sitelinks": 13
+      },
+      {
+        "gutenbergId": 4507,
+        "title": "As a man thinketh",
+        "author": "James Allen",
+        "interest": "psychology",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 56852,
+        "title": "Time and Free Will: An Essay on the Immediate Data of Consciousness",
+        "author": "Henri Bergson",
+        "interest": "psychology",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 16058,
+        "title": "Occult Chemistry: Clairvoyant Observations on the Chemical Elements",
+        "author": "Annie Besant",
+        "interest": "psychology",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 65903,
+        "title": "Psychology of the Unconscious A Study of the Transformations and Symbolisms of the Libido. A Contribution to the Histor…",
+        "author": "C. G. Jung",
+        "interest": "psychology",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 439,
+        "title": "The Vital Message",
+        "author": "Arthur Conan Doyle",
+        "interest": "psychology",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 37423,
+        "title": "How We Think",
+        "author": "John Dewey",
+        "interest": "psychology",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 162,
+        "title": "Take Me for a Ride: Coming of Age in a Destructive Cult",
+        "author": "Mark E. Laxer",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 448,
+        "title": "The Psychology of Revolution",
+        "author": "Gustave Le Bon",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 449,
+        "title": "Pathology of Lying, Accusation, and Swindling: A Study in Forensic Psychology",
+        "author": "William Healy",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 477,
+        "title": "Criminal Sociology",
+        "author": "Enrico Ferri",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 563,
+        "title": "The Planet Mars and Its Inhabitants, a Psychic Revelation",
+        "author": "J. L. Kennon",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 743,
+        "title": "Thoughts on Man, His Nature, Productions and Discoveries Interspersed with Some Particulars Respecting the Author",
+        "author": "William Godwin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 926,
+        "title": "Ten Thousand Dreams Interpreted; Or, What's in a Dream A Scientific and Practical Exposition",
+        "author": "Gustavus Hindman Miller",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 988,
+        "title": "The Education of the Child",
+        "author": "Ellen Key",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1226,
+        "title": "The Journal of Abnormal Psychology, Volume 10",
+        "author": "Various",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1233,
+        "title": "The Origin and Nature of the Emotions; Miscellaneous Papers",
+        "author": "George Washington Crile",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1271,
+        "title": "Bygone Beliefs: Being a Series of Excursions in the Byways of Thought",
+        "author": "H. Stanley Redgrove",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1319,
+        "title": "Increasing Human Efficiency in Business A Contribution to the Psychology of Business",
+        "author": "Walter Dill Scott",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1320,
+        "title": "Criminal Psychology: A Manual for Judges, Practitioners, and Students",
+        "author": "Hans Gross",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1398,
+        "title": "The Doré Lectures Being Sunday addresses at the Doré Gallery, London, given in connection with the Higher Thought Centre",
+        "author": "T. Troward",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1570,
+        "title": "The Power of Concentration",
+        "author": "William Walker Atkinson",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1575,
+        "title": "The Foundations of Personality",
+        "author": "Abraham Myerson",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1638,
+        "title": "The New Revelation",
+        "author": "Arthur Conan Doyle",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1650,
+        "title": "The Light of Egypt; Or, The Science of the Soul and the Stars — Volume 2",
+        "author": "Thomas H. Burgoyne",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2033,
+        "title": "The Unknown Guest",
+        "author": "Maurice Maeterlinck",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2529,
+        "title": "The Analysis of Mind",
+        "author": "Bertrand Russell",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3751,
+        "title": "The Psychology of Beauty",
+        "author": "Ethel Puffer Howes",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4254,
+        "title": "Miscellanies Upon Various Subjects",
+        "author": "John Aubrey",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4256,
+        "title": "Stammering, its cause and cure",
+        "author": "Benjamin Nathaniel Bogue",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4286,
+        "title": "Mastery of Self for Wealth, Power, Success",
+        "author": "Frank C. Haddock",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4338,
+        "title": "The Freedom of Life",
+        "author": "Annie Payson Call",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4339,
+        "title": "Nerves and Common Sense",
+        "author": "Annie Payson Call",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4385,
+        "title": "As a Matter of Course",
+        "author": "Annie Payson Call",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4611,
+        "title": "Where No Fear Was: A Book About Fear",
+        "author": "Arthur Christopher Benson",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4662,
+        "title": "Narcissism Book of Quotes A Selection of Quotes from the Collective Wisdom of over 12,000 Individual Discussions",
+        "author": "Samuel Vaknin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4663,
+        "title": "Malignant Self Love [Excerpts]",
+        "author": "Samuel Vaknin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4686,
+        "title": "Underground: Hacking, madness and obsession on the electronic frontier",
+        "author": "Suelette Dreyfus",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4780,
+        "title": "Terrorists and Freedom Fighters",
+        "author": "Samuel Vaknin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5078,
+        "title": "When a Man Comes to Himself",
+        "author": "Woodrow Wilson",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5994,
+        "title": "Our Nervous Friends — Illustrating the Mastery of Nervousness",
+        "author": "Robert S. Carroll",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6911,
+        "title": "The Majesty of Calmness; individual problems and posibilities",
+        "author": "William George Jordan",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6964,
+        "title": "Telling Fortunes By Tea Leaves: How to Read Your Fate in a Teacup",
+        "author": "Cicely Kent",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7082,
+        "title": "Lives of the Necromancers",
+        "author": "William Godwin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7224,
+        "title": "Within You is the Power",
+        "author": "Henry Thomas Hamblin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7966,
+        "title": "The Child and Childhood in Folk-Thought Studies of the Activities and Influences of the Child Among Primitive Peoples,…",
+        "author": "Alexander Francis Chamberlain",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8215,
+        "title": "The Developmental Psychology of Psychopathology",
+        "author": "Samuel Vaknin",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8414,
+        "title": "Freedom Talks No. II",
+        "author": "Julia Seton",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8554,
+        "title": "Why Worry?",
+        "author": "George Lincoln Walton",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8729,
+        "title": "The Dancing Mouse: A Study in Animal Behavior",
+        "author": "Robert Mearns Yerkes",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8855,
+        "title": "Astral Worship",
+        "author": "J. H. Hill",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9172,
+        "title": "A Study of Association in Insanity",
+        "author": "Grace Helen Kent",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9472,
+        "title": "The Atlantic Monthly, Volume 05, No. 31, May, 1860 A Magazine of Literature, Art, and Politics",
+        "author": "Various",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9917,
+        "title": "Your Child: Today and Tomorrow Some Problems for Parents Concerning Punishment, Reasoning, Lies, Ideals and Ambitions,…",
+        "author": "Sidonie Matsner Gruenberg",
+        "interest": "psychology",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9944,
+        "title": "The Conquest of Fear",
+        "author": "Basil King",
+        "interest": "psychology",
+        "sitelinks": 0
+      }
+    ],
+    "success": [
+      {
+        "gutenbergId": 935,
+        "title": "Self Help; with Illustrations of Conduct and Perseverance",
+        "author": "Samuel Smiles",
+        "interest": "success",
+        "sitelinks": 10
+      },
+      {
+        "gutenbergId": 4320,
+        "title": "An Enquiry Concerning the Principles of Morals",
+        "author": "David Hume",
+        "interest": "success",
+        "sitelinks": 9
+      },
+      {
+        "gutenbergId": 4507,
+        "title": "As a man thinketh",
+        "author": "James Allen",
+        "interest": "success",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 59844,
+        "title": "The Science of Getting Rich",
+        "author": "W. D. Wattles",
+        "interest": "success",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 368,
+        "title": "Acres of Diamonds: Our Every-day Opportunities",
+        "author": "Russell H. Conwell",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 455,
+        "title": "The University of Hard Knocks",
+        "author": "Ralph Albert Parlette",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2157,
+        "title": "Female Suffrage: A Letter to the Christian Women of America",
+        "author": "Susan Fenimore Cooper",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2274,
+        "title": "How to Live on 24 Hours a Day",
+        "author": "Arnold Bennett",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2541,
+        "title": "Character",
+        "author": "Samuel Smiles",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3351,
+        "title": "Letters to His Son, 1746-47 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3352,
+        "title": "Letters to His Son, 1748 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3353,
+        "title": "Letters to His Son, 1749 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3354,
+        "title": "Letters to His Son, 1750 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3355,
+        "title": "Letters to His Son, 1751 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3356,
+        "title": "Letters to His Son, 1752 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3357,
+        "title": "Letters to His Son, 1753-54 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3358,
+        "title": "Letters to His Son, 1756-58 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3359,
+        "title": "Letters to His Son, 1759-65 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3360,
+        "title": "Letters to His Son, 1766-71 On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3361,
+        "title": "Letters to His Son, Complete On the Fine Art of Becoming a Man of the World and a Gentleman",
+        "author": "Chesterfield",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4225,
+        "title": "First and Last Things: A Confession of Faith and Rule of Life",
+        "author": "H. G. Wells",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4701,
+        "title": "The Ethics of the Dust",
+        "author": "John Ruskin",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5068,
+        "title": "On Being Human",
+        "author": "Woodrow Wilson",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5078,
+        "title": "When a Man Comes to Himself",
+        "author": "Woodrow Wilson",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6583,
+        "title": "Serious Hours of a Young Lady",
+        "author": "Charles Sainte-Foi",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6911,
+        "title": "The Majesty of Calmness; individual problems and posibilities",
+        "author": "William George Jordan",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7952,
+        "title": "The Pleasures of Life",
+        "author": "Lubbock",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8581,
+        "title": "The art of money getting",
+        "author": "P. T. Barnum",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8881,
+        "title": "A Fleece of Gold; Five Lessons from the Fable of Jason and the Golden Fleece",
+        "author": "Charles Stewart Given",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8904,
+        "title": "How to Do It",
+        "author": "Edward Everett Hale",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8932,
+        "title": "Lessons in Life; A Series of Familiar Essays",
+        "author": "J. G. Holland",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9054,
+        "title": "The Young Woman's Guide",
+        "author": "William A. Alcott",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9469,
+        "title": "The Call of the Twentieth Century, an Address to Young Men",
+        "author": "David Starr Jordan",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10417,
+        "title": "Love, Life & Work Being a Book of Opinions Reasonably Good-Natured Concerning How to Attain the Highest Happiness for O…",
+        "author": "Elbert Hubbard",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10715,
+        "title": "The Essays of Arthur Schopenhauer; Counsels and Maxims",
+        "author": "Arthur Schopenhauer",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10740,
+        "title": "The Way of Peace",
+        "author": "James Allen",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10741,
+        "title": "The Essays of Arthur Schopenhauer: the Wisdom of Life",
+        "author": "Arthur Schopenhauer",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 11939,
+        "title": "Life's Enthusiasms",
+        "author": "David Starr Jordan",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12020,
+        "title": "A Woman of the World: Her Counsel to Other People's Sons and Daughters",
+        "author": "Ella Wheeler Wilcox",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12649,
+        "title": "Analyzing Character The New Science of Judging Men; Misfits in Business, the Home and Social Life",
+        "author": "Katherine M. H. Blackford",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12811,
+        "title": "The Human Machine",
+        "author": "Arnold Bennett",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13072,
+        "title": "Common sense, how to exercise it",
+        "author": "-1940 Yoritomo-Tashi",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13104,
+        "title": "The Abominations of Modern Society",
+        "author": "T. De Witt Talmage",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13160,
+        "title": "An Iron Will",
+        "author": "Orison Swett Marden",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13449,
+        "title": "The Plain Man and His Wife",
+        "author": "Arnold Bennett",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13588,
+        "title": "The Young Gentleman and Lady's Monitor, and English Teacher's Assistant Being a collection of select pieces from our be…",
+        "author": "John Hamilton Moore",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13816,
+        "title": "The Jericho Road",
+        "author": "W. Bion Adkins",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13877,
+        "title": "Poise",
+        "author": "D. Starke",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14239,
+        "title": "Golden Steps to Respectability, Usefulness and Happiness Being a Series of Lectures to Youth of Both Sexes, on Characte…",
+        "author": "John Mather Austin",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14312,
+        "title": "What All The World's A-Seeking The Vital Law of True Life, True Greatness Power and Happiness",
+        "author": "Ralph Waldo Trine",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14589,
+        "title": "Certain Success",
+        "author": "Norval A. Hawkins",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14660,
+        "title": "Mabini's Decalogue for Filipinos",
+        "author": "Apolinario Mabini",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14679,
+        "title": "Stray Thoughts for Girls",
+        "author": "Lucy Helen Muriel Soulsby",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15248,
+        "title": "Success (Second Edition)",
+        "author": "Beaverbrook",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15419,
+        "title": "Letters to a Daughter and A Little Sermon to School Girls",
+        "author": "Helen Ekin Starrett",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15490,
+        "title": "The Young Lady's Mentor A Guide to the Formation of Character. In a Series of Letters to Her Unknown Friends",
+        "author": "Anonymous",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15510,
+        "title": "Advice to young men, and (incidentally) to young women, in the middle and higher ranks of life",
+        "author": "William Cobbett",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16287,
+        "title": "Talks To Teachers On Psychology; And To Students On Some Of Life's Ideals",
+        "author": "William James",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16520,
+        "title": "The Girl and Her Religion",
+        "author": "Margaret Slattery",
+        "interest": "success",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16802,
+        "title": "The Ladies' Vase; Or, Polite Manual for Young Ladies",
+        "author": "American lady",
+        "interest": "success",
+        "sitelinks": 0
+      }
+    ],
+    "leadership": [
+      {
+        "gutenbergId": 48870,
+        "title": "Early Lives of Charlemagne by Eginhard and the Monk of St Gall edited by Prof. A. J. Grant",
+        "author": "Einhard",
+        "interest": "leadership",
+        "sitelinks": 31
+      },
+      {
+        "gutenbergId": 66886,
+        "title": "From Immigrant to Inventor",
+        "author": "Michael Pupin",
+        "interest": "leadership",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 148,
+        "title": "The Autobiography of Benjamin Franklin",
+        "author": "Benjamin Franklin",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 412,
+        "title": "John Jacob Astor",
+        "author": "Elbert Hubbard",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 712,
+        "title": "Thomas Jefferson, a Character Sketch",
+        "author": "Edward Sylvester Ellis",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 725,
+        "title": "Men of Invention and Industry",
+        "author": "Samuel Smiles",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 820,
+        "title": "Edison: His Life and Inventions",
+        "author": "Frank Lewis Dyer",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 843,
+        "title": "The Life of Francis Marion",
+        "author": "William Gilmore Simms",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 846,
+        "title": "The Life of General Francis Marion",
+        "author": "M. L. Weems",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 923,
+        "title": "A Sketch of the Life of Brig. Gen. Francis Marion and a History of His Brigade",
+        "author": "William Dobein James",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1066,
+        "title": "William the Conqueror",
+        "author": "Edward A. Freeman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1067,
+        "title": "Personal Memoirs of U. S. Grant — Volume 1",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1068,
+        "title": "Personal Memoirs of U. S. Grant — Volume 2",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1713,
+        "title": "Lincoln; An Account of his Personal Life, Especially of its Springs of Action as Revealed and Deepened by the Ordeal of…",
+        "author": "Nathaniel W. Stephenson",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1815,
+        "title": "The Boys' Life of Abraham Lincoln",
+        "author": "Helen Nicolay",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1864,
+        "title": "Hero Tales from American History",
+        "author": "Henry Cabot Lodge",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2323,
+        "title": "Recollections and Letters of General Robert E. Lee",
+        "author": "Robert E. Lee",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2386,
+        "title": "Theodore Roosevelt: An Intimate Biography",
+        "author": "William Roscoe Thayer",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2401,
+        "title": "The Memoirs of General Baron de Marbot",
+        "author": "Marbot",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2616,
+        "title": "Memoirs of General William T. Sherman — Volume 1",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2617,
+        "title": "Memoirs of General William T. Sherman — Volume 2",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2647,
+        "title": "Life and Letters of Lord Macaulay. Volume 1",
+        "author": "George Otto Trevelyan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2651,
+        "title": "Personal Memoirs of P. H. Sheridan, General, United States Army — Volume 1",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2652,
+        "title": "Personal Memoirs of P. H. Sheridan, General, United States Army — Volume 2",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2704,
+        "title": "Washington and His Comrades in Arms: A Chronicle of the War of Independence",
+        "author": "George McKinnon Wrong",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3335,
+        "title": "Theodore Roosevelt: An Autobiography",
+        "author": "Theodore Roosevelt",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3899,
+        "title": "Memoirs of the Court of St. Cloud (Being secret letters from a gentleman at Paris to a nobleman in London) — Complete",
+        "author": "Goldsmith",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4361,
+        "title": "Memoirs of General William T. Sherman — Complete",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4362,
+        "title": "Personal Memoirs of P. H. Sheridan, General, United States Army — Complete",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4367,
+        "title": "Personal Memoirs of U. S. Grant, Complete",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4546,
+        "title": "Memoirs of the Union's Three Great Civil War Generals",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5850,
+        "title": "Memoirs of General W. T. Sherman, Volume I., Part 1",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5851,
+        "title": "Memoirs of General W. T. Sherman, Volume I., Part 2",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5852,
+        "title": "Memoirs of General W. T. Sherman, Volume II., Part 3",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5853,
+        "title": "Memoirs of General W. T. Sherman, Volume II., Part 4",
+        "author": "William T. Sherman",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5854,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 1, Part 1",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5855,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 1, Part 2",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5856,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 1, Part 3",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5857,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 2, Part 4",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5858,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 2, Part 5",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5859,
+        "title": "Personal Memoirs of P. H. Sheridan, Volume 2, Part 6",
+        "author": "Philip Henry Sheridan",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5860,
+        "title": "Personal Memoirs of U. S. Grant, Part 1.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5861,
+        "title": "Personal Memoirs of U. S. Grant, Part 2.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5862,
+        "title": "Personal Memoirs of U. S. Grant, Part 3.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5863,
+        "title": "Personal Memoirs of U. S. Grant, Part 4.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5864,
+        "title": "Personal Memoirs of U. S. Grant, Part 5.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5865,
+        "title": "Personal Memoirs of U. S. Grant, Part 6.",
+        "author": "Ulysses S. Grant",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6163,
+        "title": "The Romance and Tragedy of a Widely Known Business Man of New York",
+        "author": "William Ingraham Russell",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6467,
+        "title": "Letters to His Children",
+        "author": "Theodore Roosevelt",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6811,
+        "title": "The Life of Abraham Lincoln",
+        "author": "Henry Ketcham",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6812,
+        "title": "Abraham Lincoln: a History — Volume 01",
+        "author": "John G. Nicolay",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7002,
+        "title": "Life of George Washington, volume 1 of 5",
+        "author": "Washington Irving",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7339,
+        "title": "An Account of Sa-Go-Ye-Wat-Ha, or Red Jacket, and His People, 1750-1830",
+        "author": "John Niles Hubbard",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7850,
+        "title": "Memoirs of Aaron Burr, Volume 1.",
+        "author": "Aaron Burr",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7851,
+        "title": "Memoirs of Aaron Burr, Volume 2.",
+        "author": "Aaron Burr",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7852,
+        "title": "Memoirs of Aaron Burr, Complete",
+        "author": "Aaron Burr",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7975,
+        "title": "Memoirs of James Robert Hope-Scott, Volume 2",
+        "author": "Robert Ornsby",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8124,
+        "title": "Woodrow Wilson as I Know Him",
+        "author": "Joseph P. Tumulty",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8145,
+        "title": "Life and Times of Washington, Volume 2 Revised, Enlarged, and Enriched",
+        "author": "John Frederick Schroeder",
+        "interest": "leadership",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8945,
+        "title": "The Life of Cicero, Volume One",
+        "author": "Anthony Trollope",
+        "interest": "leadership",
+        "sitelinks": 0
+      }
+    ],
+    "money": [
+      {
+        "gutenbergId": 16575,
+        "title": "An inquiry into the permanent causes of the decline and fall of powerful and wealthy nations",
+        "author": "William Playfair",
+        "interest": "money",
+        "sitelinks": 44
+      },
+      {
+        "gutenbergId": 55308,
+        "title": "Progress and Poverty, Volumes I and II An Inquiry into the Cause of Industrial Depressions and of Increase of Want with…",
+        "author": "Henry George",
+        "interest": "money",
+        "sitelinks": 31
+      },
+      {
+        "gutenbergId": 4239,
+        "title": "An Essay on the Principle of Population",
+        "author": "T. R. Malthus",
+        "interest": "money",
+        "sitelinks": 27
+      },
+      {
+        "gutenbergId": 833,
+        "title": "The Theory of the Leisure Class",
+        "author": "Thorstein Veblen",
+        "interest": "money",
+        "sitelinks": 19
+      },
+      {
+        "gutenbergId": 360,
+        "title": "What is Property? An Inquiry into the Principle of Right and of Government",
+        "author": "P.-J. Proudhon",
+        "interest": "money",
+        "sitelinks": 13
+      },
+      {
+        "gutenbergId": 12784,
+        "title": "The Prose Works of Jonathan Swift, D.D. — Volume 06 The Drapier's Letters",
+        "author": "Jonathan Swift",
+        "interest": "money",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 64353,
+        "title": "Fields, factories and workshops",
+        "author": "Kropotkin",
+        "interest": "money",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 59844,
+        "title": "The Science of Getting Rich",
+        "author": "W. D. Wattles",
+        "interest": "money",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 57819,
+        "title": "Other People's Money, and How the Bankers Use It",
+        "author": "Louis Dembitz Brandeis",
+        "interest": "money",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 88,
+        "title": "Price/Cost Indexes from 1875 to 1989; Estimated to 2010",
+        "author": "Michael Hart",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 444,
+        "title": "System of Economical Contradictions; Or, The Philosophy of Misery",
+        "author": "P.-J. Proudhon",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1319,
+        "title": "Increasing Human Efficiency in Business A Contribution to the Psychology of Business",
+        "author": "Walter Dill Scott",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1903,
+        "title": "Everybody's Guide to Money Matters With a description of the various investments chiefly dealt in on the stock exchange…",
+        "author": "Cotton",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3300,
+        "title": "An Inquiry into the Nature and Causes of the Wealth of Nations",
+        "author": "Adam Smith",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4334,
+        "title": "Observations on the Effects of the Corn Laws, and of a Rise or Fall in the Price of Corn on the Agriculture and General…",
+        "author": "T. R. Malthus",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4335,
+        "title": "The Grounds of an Opinion on the Policy of Restricting the Importation of Foreign Corn Intended as an appendix to \"Obse…",
+        "author": "T. R. Malthus",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4336,
+        "title": "An Inquiry into the Nature and Progress of Rent, and the Principles by Which It is Regulated",
+        "author": "T. R. Malthus",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4359,
+        "title": "Lombard Street: A Description of the Money Market",
+        "author": "Walter Bagehot",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4543,
+        "title": "The Querist Containing Several Queries Proposed to the Consideration of the Public",
+        "author": "George Berkeley",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4776,
+        "title": "Political Ideals",
+        "author": "Bertrand Russell",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5619,
+        "title": "Essays on Mankind and Political Arithmetic",
+        "author": "Petty",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6167,
+        "title": "Business Hints for Men and Women",
+        "author": "A. R. Calhoun",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6495,
+        "title": "Great Fortunes from Railroads",
+        "author": "Gustavus Myers",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6580,
+        "title": "Charter and Supplemental Charter of the Hudson's Bay Company",
+        "author": "Hudson's Bay Company",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6598,
+        "title": "American Woman's Home: Or, Principles of Domestic Science; Being a Guide to the Formation and Maintenance of Economical…",
+        "author": "Catharine Esther Beecher",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6716,
+        "title": "The Spirit of 1906",
+        "author": "George W. Brooks",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6949,
+        "title": "Fiat Money Inflation in France: How it Came, What it Brought, and How it Ended",
+        "author": "Andrew Dickson White",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7309,
+        "title": "Business Correspondence, Vol. 1: How to Write a Business Letter",
+        "author": "Anonymous",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7361,
+        "title": "A Brief History of Panics and Their Periodical Occurrence in the United States",
+        "author": "Clément Juglar",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7428,
+        "title": "The consumer viewpoint",
+        "author": "Mildred Maddocks Bentley",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8000,
+        "title": "The Slave Trade, Domestic and Foreign Why It Exists, and How It May Be Extinguished",
+        "author": "Henry Charles Carey",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8214,
+        "title": "Capitalistic Musings",
+        "author": "Samuel Vaknin",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8436,
+        "title": "Speculations from Political Economy",
+        "author": "Charles Baron Clarke",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8581,
+        "title": "The art of money getting",
+        "author": "P. T. Barnum",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8996,
+        "title": "Practical Suggestions for Mother and Housewife",
+        "author": "Marion Mills Miller",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10136,
+        "title": "The Book of Household Management",
+        "author": "Mrs. Beeton",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10612,
+        "title": "Supply and Demand",
+        "author": "Henderson",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 11090,
+        "title": "Industrial Progress and Human Economics",
+        "author": "James Hartness",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 11262,
+        "title": "Cyclopedia of Economics",
+        "author": "Samuel Vaknin",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 11774,
+        "title": "International Finance",
+        "author": "Hartley Withers",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12004,
+        "title": "Essays on some unsettled Questions of Political Economy",
+        "author": "John Stuart Mill",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12217,
+        "title": "Economics Volume II: Modern Economic Problems",
+        "author": "Frank A. Fetter",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12324,
+        "title": "The Elizabethan Parish in its Ecclesiastical and Financial Aspects",
+        "author": "Sedley Lynch Ware",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12366,
+        "title": "The Cost of Shelter",
+        "author": "Ellen H. Richards",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12920,
+        "title": "The \"Goldfish\" Being the Confessions af a Successful Man",
+        "author": "Arthur Cheney Train",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13045,
+        "title": "War-Time Financial Problems",
+        "author": "Hartley Withers",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13488,
+        "title": "An Essay on Mediæval Economic Teaching",
+        "author": "George O'Brien",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13493,
+        "title": "The American Frugal Housewife",
+        "author": "Lydia Maria Child",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14117,
+        "title": "Wanted, a Young Woman to Do Housework: Business principles applied to housework",
+        "author": "C. Hélène Barker",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14444,
+        "title": "The Complete English Tradesman (1839 ed.)",
+        "author": "Defoe",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14589,
+        "title": "Certain Success",
+        "author": "Norval A. Hawkins",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14943,
+        "title": "An American Idyll: The Life of Carleton H. Parker",
+        "author": "Cornelia Stratton Parker",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15154,
+        "title": "Psychology and Industrial Efficiency",
+        "author": "Hugo Münsterberg",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15248,
+        "title": "Success (Second Edition)",
+        "author": "Beaverbrook",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15360,
+        "title": "The Easiest Way in Housekeeping and Cooking Adapted to Domestic Use or Study in Classes",
+        "author": "Helen Campbell",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15822,
+        "title": "The faithful steward",
+        "author": "Sereno D. Clark",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15939,
+        "title": "Definition & Reality in the General Theory of Political Economy",
+        "author": "Thomas Cool",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15962,
+        "title": "Essays on Political Economy",
+        "author": "Frédéric Bastiat",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16106,
+        "title": "What Is Free Trade? An Adaptation of Frederic Bastiat's \"Sophismes Éconimiques\" Designed for the American Reader",
+        "author": "Frédéric Bastiat",
+        "interest": "money",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16256,
+        "title": "The Psychology of Management The Function of the Mind in Determining, Teaching and Installing Methods of Least Waste",
+        "author": "Lillian Moller Gilbreth",
+        "interest": "money",
+        "sitelinks": 0
+      }
+    ],
+    "science": [
+      {
+        "gutenbergId": 201,
+        "title": "Flatland: A Romance of Many Dimensions",
+        "author": "Edwin Abbott Abbott",
+        "interest": "science",
+        "sitelinks": 35
+      },
+      {
+        "gutenbergId": 33504,
+        "title": "Opticks",
+        "author": "Isaac Newton",
+        "interest": "science",
+        "sitelinks": 34
+      },
+      {
+        "gutenbergId": 2300,
+        "title": "The Descent of Man, and Selection in Relation to Sex",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 30
+      },
+      {
+        "gutenbergId": 1708,
+        "title": "A History of Science — Volume 4",
+        "author": "Henry Smith Williams",
+        "interest": "science",
+        "sitelinks": 29
+      },
+      {
+        "gutenbergId": 12406,
+        "title": "Kepler",
+        "author": "Walter W. Bryant",
+        "interest": "science",
+        "sitelinks": 26
+      },
+      {
+        "gutenbergId": 3704,
+        "title": "Journal of Researches into the Natural History and Geology of the Countries Visited During the Voyage Round the World o…",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 25
+      },
+      {
+        "gutenbergId": 22914,
+        "title": "The Sceptical Chymist or Chymico-Physical Doubts & Paradoxes, Touching the Spagyrist's Principles Commonly call'd Hypos…",
+        "author": "Robert Boyle",
+        "interest": "science",
+        "sitelinks": 19
+      },
+      {
+        "gutenbergId": 1227,
+        "title": "The Expression of the Emotions in Man and Animals",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 17
+      },
+      {
+        "gutenbergId": 33224,
+        "title": "Principles of Geology or, The Modern Changes of the Earth and its Inhabitants Considered as Illustrative of Geology",
+        "author": "Lyell",
+        "interest": "science",
+        "sitelinks": 17
+      },
+      {
+        "gutenbergId": 2355,
+        "title": "The Formation of Vegetable Mould Through the Action of Worms With Observations on Their Habits",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 15
+      },
+      {
+        "gutenbergId": 14474,
+        "title": "The Chemical History of a Candle",
+        "author": "Michael Faraday",
+        "interest": "science",
+        "sitelinks": 12
+      },
+      {
+        "gutenbergId": 2010,
+        "title": "The Autobiography of Charles Darwin",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 11
+      },
+      {
+        "gutenbergId": 67065,
+        "title": "An anatomical disquisition on the motion of the heart & blood in animals",
+        "author": "William Harvey",
+        "interest": "science",
+        "sitelinks": 11
+      },
+      {
+        "gutenbergId": 15707,
+        "title": "Zoonomia; Or, the Laws of Organic Life, Vol. I",
+        "author": "Erasmus Darwin",
+        "interest": "science",
+        "sitelinks": 10
+      },
+      {
+        "gutenbergId": 5605,
+        "title": "The Power of Movement in Plants",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 8
+      },
+      {
+        "gutenbergId": 2931,
+        "title": "Evidence as to Man's Place in Nature",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 7
+      },
+      {
+        "gutenbergId": 2440,
+        "title": "The Naturalist on the River Amazons",
+        "author": "Henry Walter Bates",
+        "interest": "science",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 3054,
+        "title": "Volcanic Islands",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 12861,
+        "title": "Theory of the Earth, With Proofs and Illustrations, Volume 1 (of 4)",
+        "author": "James Hutton",
+        "interest": "science",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 6335,
+        "title": "The Antiquity of Man",
+        "author": "Lyell",
+        "interest": "science",
+        "sitelinks": 4
+      },
+      {
+        "gutenbergId": 6475,
+        "title": "Facts and Arguments for Darwin",
+        "author": "Fritz Müller",
+        "interest": "science",
+        "sitelinks": 4
+      },
+      {
+        "gutenbergId": 14558,
+        "title": "Darwinism (1889) An exposition of the theory of natural selection, with some of its applications",
+        "author": "Alfred Russel Wallace",
+        "interest": "science",
+        "sitelinks": 4
+      },
+      {
+        "gutenbergId": 3807,
+        "title": "The Different Forms of Flowers on Plants of the Same Species",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 60607,
+        "title": "A New Era of Thought",
+        "author": "Charles Howard Hinton",
+        "interest": "science",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 929,
+        "title": "The Real Cyberpunk Fakebook",
+        "author": "St. Jude",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 944,
+        "title": "The Voyage of the Beagle",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1043,
+        "title": "The Story of Evolution",
+        "author": "Joseph McCabe",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1216,
+        "title": "Reflections on the Decline of Science in England, and on Some of Its Causes",
+        "author": "Charles Babbage",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1221,
+        "title": "A Preliminary Revision of the North American Species of Cactus, Anhalonium, and Lophophora",
+        "author": "John Merle Coulter",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1225,
+        "title": "Faraday as a Discoverer",
+        "author": "John Tyndall",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1228,
+        "title": "On the Origin of Species By Means of Natural Selection Or, the Preservation of Favoured Races in the Struggle for Life",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1234,
+        "title": "Organic Syntheses An Annual Publication of Satisfactory Methods for the Preparation of Organic Chemicals",
+        "author": "James Bryant Conant",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1315,
+        "title": "Autobiography and Selected Essays",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1331,
+        "title": "ABC's of Science",
+        "author": "Charles A. Oliver",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1705,
+        "title": "A History of Science — Volume 1",
+        "author": "Henry Smith Williams",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1706,
+        "title": "A History of Science — Volume 2",
+        "author": "Henry Smith Williams",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1707,
+        "title": "A History of Science — Volume 3",
+        "author": "Henry Smith Williams",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1887,
+        "title": "The Life of the Spider",
+        "author": "Jean-Henri Fabre",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1909,
+        "title": "Darwin and Modern Science",
+        "author": "A. C. Seward",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2009,
+        "title": "The Origin of Species by Means of Natural Selection Or, the Preservation of Favoured Races in the Struggle for Life, 6t…",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2087,
+        "title": "Life and Letters of Charles Darwin — Volume 1",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2088,
+        "title": "Life and Letters of Charles Darwin — Volume 2",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2089,
+        "title": "On the Reception of the 'Origin of Species'",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2354,
+        "title": "Note on the Resemblances and Differences in the Structure and the Development of the Brain in Man and Apes",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2485,
+        "title": "The Movements and Habits of Climbing Plants",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2627,
+        "title": "On the Method of Zadig Essay #1 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2628,
+        "title": "The Rise and Progress of Palaeontology Essay #2 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2629,
+        "title": "Lectures on Evolution Essay #3 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2630,
+        "title": "The Interpreters of Genesis and the Interpreters of Nature Essay #4 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2631,
+        "title": "Mr. Gladstone and Genesis Essay #5 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2632,
+        "title": "The Lights of the Church and the Light of Science Essay #6 from \"Science and Hebrew Tradition\"",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2690,
+        "title": "Coral Reefs",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2739,
+        "title": "More Letters of Charles Darwin — Volume 1 A Record of His Work in a Series of Hitherto Unpublished Letters",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2740,
+        "title": "More Letters of Charles Darwin — Volume 2 A Record of His Work in a Series of Hitherto Unpublished Letters",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2871,
+        "title": "The Variation of Animals and Plants under Domestication — Volume 1",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2872,
+        "title": "The Variation of Animals and Plants under Domestication — Volume 2",
+        "author": "Charles Darwin",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2884,
+        "title": "The Mason-Bees",
+        "author": "Jean-Henri Fabre",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2921,
+        "title": "The Present Condition of Organic Nature Lecture I. (of VI.), \"Lectures to Working Men\", at the Museum of Practical Geol…",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2922,
+        "title": "The Past Condition of Organic Nature Lecture II. (of VI.), \"Lectures to Working Men\", at the Museum of Practical Geolog…",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2923,
+        "title": "The Method by Which the Causes of the Present and Past Conditions of Organic Nature Are to Be Discovered; the Originati…",
+        "author": "Thomas Henry Huxley",
+        "interest": "science",
+        "sitelinks": 0
+      }
+    ],
+    "health": [
+      {
+        "gutenbergId": 67065,
+        "title": "An anatomical disquisition on the motion of the heart & blood in animals",
+        "author": "William Harvey",
+        "interest": "health",
+        "sitelinks": 11
+      },
+      {
+        "gutenbergId": 15707,
+        "title": "Zoonomia; Or, the Laws of Organic Life, Vol. I",
+        "author": "Erasmus Darwin",
+        "interest": "health",
+        "sitelinks": 10
+      },
+      {
+        "gutenbergId": 63293,
+        "title": "The Fasting Cure",
+        "author": "Upton Sinclair",
+        "interest": "health",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 747,
+        "title": "Anomalies and Curiosities of Medicine",
+        "author": "George M. Gould",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1233,
+        "title": "The Origin and Nature of the Emotions; Miscellaneous Papers",
+        "author": "George Washington Crile",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1566,
+        "title": "The Evolution of Modern Medicine A Series of Lectures Delivered at Yale University on the Silliman Foundation in April,…",
+        "author": "Osler",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1739,
+        "title": "The Black Death, and The Dancing Mania",
+        "author": "J. F. C. Hecker",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2939,
+        "title": "William Harvey and the Discovery of the Circulation of the Blood",
+        "author": "Thomas Henry Huxley",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3453,
+        "title": "The Royal Road to Health; Or, the Secret of Health Without Drugs",
+        "author": "Chas. A. Tyrrell",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3731,
+        "title": "Disturbances of the Heart Discussion of the Treatment of the Heart in Its Various Disorders, With a Chapter on Blood Pr…",
+        "author": "Oliver T. Osborne",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4256,
+        "title": "Stammering, its cause and cure",
+        "author": "Benjamin Nathaniel Bogue",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4273,
+        "title": "Nature Cure: Philosophy & Practice Based on the Unity of Disease & Cure",
+        "author": "Henry Lindlahr",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4314,
+        "title": "Appendicitis: The Etiology, Hygenic and Dietetic Treatment",
+        "author": "J. H. Tilden",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4337,
+        "title": "Power Through Repose",
+        "author": "Annie Payson Call",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4339,
+        "title": "Nerves and Common Sense",
+        "author": "Annie Payson Call",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4343,
+        "title": "How and When to Be Your Own Doctor",
+        "author": "Isabel A. Moser",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4385,
+        "title": "As a Matter of Course",
+        "author": "Annie Payson Call",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4986,
+        "title": "The Four Epochs of Woman's Life; A Study in Hygiene",
+        "author": "Anna M. Galbraith",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6361,
+        "title": "Making Good on Private Duty: Practical Hints to Graduate Nurses",
+        "author": "Harriet Camp Lounsbery",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6481,
+        "title": "Personal Experience of a Physician",
+        "author": "John Ellis",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6595,
+        "title": "Advice to a Mother on the Management of Her Children",
+        "author": "Pye Henry Chavasse",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6752,
+        "title": "Study and Stimulants Or, the Use of Intoxicants and Narcotics in Relation to Intellectual Life, as Illustrated by Perso…",
+        "author": "A. Arthur Reade",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 6986,
+        "title": "Hygienic Physiology : with Special Reference to the Use of Alcoholic Drinks and Narcotics",
+        "author": "Joel Dorman Steele",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7129,
+        "title": "The Prospective Mother, a Handbook for Women During Pregnancy",
+        "author": "J. Morris Slemons",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7293,
+        "title": "The Opium Habit",
+        "author": "Horace B. Day",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 7983,
+        "title": "The Vitamine Manual",
+        "author": "Walter Hollis Eddy",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 8521,
+        "title": "Maintaining Health (Formerly Health and Efficiency)",
+        "author": "Rasmus Larssen Alsaker",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 9172,
+        "title": "A Study of Association in Insanity",
+        "author": "Grace Helen Kent",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10383,
+        "title": "The maternal management of children, in health and disease",
+        "author": "Bull",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 10453,
+        "title": "A Practical Physiology: A Text-Book for Higher Schools",
+        "author": "Albert F. Blaisdell",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12036,
+        "title": "Hygeia, a City of Health",
+        "author": "Benjamin Ward Richardson",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12439,
+        "title": "Notes on Nursing: What It Is, and What It Is Not",
+        "author": "Florence Nightingale",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12522,
+        "title": "An Account of the Extraordinary Medicinal Fluid, called Aether.",
+        "author": "Turner",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 12699,
+        "title": "The Works of Aristotle the Famous Philosopher Containing his Complete Masterpiece and Family Physician; his Experienced…",
+        "author": "William Salmon",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13197,
+        "title": "Wear and Tear; Or, Hints for the Overworked",
+        "author": "S. Weir Mitchell",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13574,
+        "title": "Keeping fit all the way",
+        "author": "Walter Camp",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 13906,
+        "title": "Conception Control and Its Effects on the Individual and the Nation",
+        "author": "Florence Elizabeth Barrett",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14515,
+        "title": "The Nervous Child",
+        "author": "Hector Charles Cameron",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14743,
+        "title": "The Fun of Getting Thin: How to Be Happy and Reduce the Waist Line",
+        "author": "Samuel G. Blythe",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14901,
+        "title": "Epilepsy, Hysteria, and Neurasthenia: Their Causes, Symptoms, & Treatment",
+        "author": "Isaac George Briggs",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14980,
+        "title": "Outwitting our nerves",
+        "author": "Josephine A. Jackson",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 14985,
+        "title": "Valere aude (dare to be healthy)",
+        "author": "Louis Dechmann",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15004,
+        "title": "Doctor and Patient",
+        "author": "S. Weir Mitchell",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15069,
+        "title": "Diet and Health; With Key to the Calories",
+        "author": "Lulu Hunt Peters",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15283,
+        "title": "Disease and Its Causes",
+        "author": "W. T. Councilman",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15352,
+        "title": "Venereal Diseases in New Zealand (1922) Report of the Special Committee of the Board of Health appointed by the Hon. Mi…",
+        "author": "New Zealand. Committee of the Board of Health",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15365,
+        "title": "A Psychiatric Milestone: Bloomingdale Hospital Centenary, 1821-1921",
+        "author": "Society of the New York Hospital",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15435,
+        "title": "Object Lessons on the Human Body A Transcript of Lessons Given in the Primary Department of School No. 49, New York City",
+        "author": "Sarah F. Buckelew",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15484,
+        "title": "The Care and Feeding of Children A Catechism for the Use of Mothers and Children's Nurses",
+        "author": "L. Emmett Holt",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 15910,
+        "title": "A Short View of the Frauds and Abuses Committed by Apothecaries As well in Relation to Patients, as Physicians: And Of…",
+        "author": "Christopher Merret",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16155,
+        "title": "Gilbertus Anglicus: Medicine of the Thirteenth Century",
+        "author": "Henry E. Handerson",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16230,
+        "title": "Fat and Blood An Essay on the Treatment of Certain Forms of Neurasthenia and Hysteria",
+        "author": "S. Weir Mitchell",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16417,
+        "title": "Spadacrene Anglica: The English Spa Fountain",
+        "author": "Deane",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 16977,
+        "title": "Food and Health",
+        "author": "Lydia E. Pinkham Medicine Company",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 17439,
+        "title": "Mother's Remedies Over One Thousand Tried and Tested Remedies from Mothers of the United States and Canada",
+        "author": "Thomas Jefferson Ritter",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 17682,
+        "title": "The Healthy Life, Vol. V, Nos. 24-28 The Independent Health Magazine",
+        "author": "Various",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 17921,
+        "title": "Manual of Surgery Volume First: General Surgery. Sixth Edition.",
+        "author": "Alexis Thomson",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 18324,
+        "title": "The Third Great Plague A Discussion of Syphilis for Everyday People",
+        "author": "John H. Stokes",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 18370,
+        "title": "Manhood Perfectly Restored Prof. Jean Civiale's Soluble Urethral Crayons as a Quick, Painless, and Certain Cure for Imp…",
+        "author": "Civiale Remedial Agency",
+        "interest": "health",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 18376,
+        "title": "A Lecture on the Preservation of Health",
+        "author": "Thomas Garnett",
+        "interest": "health",
+        "sitelinks": 0
+      }
+    ],
+    "society": [
+      {
+        "gutenbergId": 61,
+        "title": "The Communist Manifesto",
+        "author": "Karl Marx",
+        "interest": "society",
+        "sitelinks": 143
+      },
+      {
+        "gutenbergId": 1232,
+        "title": "The Prince",
+        "author": "Niccolò Machiavelli",
+        "interest": "society",
+        "sitelinks": 101
+      },
+      {
+        "gutenbergId": 1404,
+        "title": "The Federalist Papers",
+        "author": "Alexander Hamilton",
+        "interest": "society",
+        "sitelinks": 41
+      },
+      {
+        "gutenbergId": 816,
+        "title": "Democracy in America — Volume 2",
+        "author": "Alexis de Tocqueville",
+        "interest": "society",
+        "sitelinks": 32
+      },
+      {
+        "gutenbergId": 7370,
+        "title": "Second Treatise of Government",
+        "author": "John Locke",
+        "interest": "society",
+        "sitelinks": 32
+      },
+      {
+        "gutenbergId": 55308,
+        "title": "Progress and Poverty, Volumes I and II An Inquiry into the Cause of Industrial Depressions and of Increase of Want with…",
+        "author": "Henry George",
+        "interest": "society",
+        "sitelinks": 31
+      },
+      {
+        "gutenbergId": 4239,
+        "title": "An Essay on the Principle of Population",
+        "author": "T. R. Malthus",
+        "interest": "society",
+        "sitelinks": 27
+      },
+      {
+        "gutenbergId": 23428,
+        "title": "The Conquest of Bread",
+        "author": "Kropotkin",
+        "interest": "society",
+        "sitelinks": 27
+      },
+      {
+        "gutenbergId": 833,
+        "title": "The Theory of the Leisure Class",
+        "author": "Thorstein Veblen",
+        "interest": "society",
+        "sitelinks": 19
+      },
+      {
+        "gutenbergId": 360,
+        "title": "What is Property? An Inquiry into the Principle of Right and of Government",
+        "author": "P.-J. Proudhon",
+        "interest": "society",
+        "sitelinks": 13
+      },
+      {
+        "gutenbergId": 445,
+        "title": "The crowd",
+        "author": "Gustave Le Bon",
+        "interest": "society",
+        "sitelinks": 13
+      },
+      {
+        "gutenbergId": 66890,
+        "title": "A Square Deal",
+        "author": "Theodore Roosevelt",
+        "interest": "society",
+        "sitelinks": 13
+      },
+      {
+        "gutenbergId": 15776,
+        "title": "The Economic Consequences of the Peace",
+        "author": "John Maynard Keynes",
+        "interest": "society",
+        "sitelinks": 12
+      },
+      {
+        "gutenbergId": 6456,
+        "title": "Public opinion",
+        "author": "Walter Lippmann",
+        "interest": "society",
+        "sitelinks": 8
+      },
+      {
+        "gutenbergId": 4351,
+        "title": "The English Constitution",
+        "author": "Walter Bagehot",
+        "interest": "society",
+        "sitelinks": 7
+      },
+      {
+        "gutenbergId": 57913,
+        "title": "Women and Economics A Study of the Economic Relation Between Men and Women as a Factor in Social Evolution",
+        "author": "Charlotte Perkins Gilman",
+        "interest": "society",
+        "sitelinks": 7
+      },
+      {
+        "gutenbergId": 12784,
+        "title": "The Prose Works of Jonathan Swift, D.D. — Volume 06 The Drapier's Letters",
+        "author": "Jonathan Swift",
+        "interest": "society",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 55610,
+        "title": "Why Men Fight: A method of abolishing the international duel",
+        "author": "Bertrand Russell",
+        "interest": "society",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 64353,
+        "title": "Fields, factories and workshops",
+        "author": "Kropotkin",
+        "interest": "society",
+        "sitelinks": 6
+      },
+      {
+        "gutenbergId": 55998,
+        "title": "London Labour and the London Poor, Vol. 1",
+        "author": "Henry Mayhew",
+        "interest": "society",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 57060,
+        "title": "London Labour and the London Poor, Vol. 3",
+        "author": "Henry Mayhew",
+        "interest": "society",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 70677,
+        "title": "An economic interpretation of the Constitution of the United States",
+        "author": "Charles A. Beard",
+        "interest": "society",
+        "sitelinks": 5
+      },
+      {
+        "gutenbergId": 34406,
+        "title": "Prison Memoirs of an Anarchist",
+        "author": "Alexander Berkman",
+        "interest": "society",
+        "sitelinks": 4
+      },
+      {
+        "gutenbergId": 61364,
+        "title": "Crystallizing Public Opinion",
+        "author": "Edward L. Bernays",
+        "interest": "society",
+        "sitelinks": 4
+      },
+      {
+        "gutenbergId": 19229,
+        "title": "Anticipations of the reaction of mechanical and scientific progress upon human life and thought",
+        "author": "H. G. Wells",
+        "interest": "society",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 54710,
+        "title": "The Shame of the Cities",
+        "author": "Lincoln Steffens",
+        "interest": "society",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 57819,
+        "title": "Other People's Money, and How the Bankers Use It",
+        "author": "Louis Dembitz Brandeis",
+        "interest": "society",
+        "sitelinks": 3
+      },
+      {
+        "gutenbergId": 1,
+        "title": "The Declaration of Independence of the United States of America",
+        "author": "Thomas Jefferson",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 5,
+        "title": "The United States Constitution",
+        "author": "United States",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 251,
+        "title": "1995 United States Congressional Address Book",
+        "author": "United States",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 475,
+        "title": "In Darkest England, and the Way Out",
+        "author": "William Booth",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 477,
+        "title": "Criminal Sociology",
+        "author": "Enrico Ferri",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 690,
+        "title": "Proposed Roads to Freedom",
+        "author": "Bertrand Russell",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 739,
+        "title": "Henry Clay's Remarks in House and Senate",
+        "author": "Henry Clay",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 740,
+        "title": "Remarks of Mr. Calhoun of South Carolina on the bill to prevent the interference of certain federal officers in electio…",
+        "author": "John C. Calhoun",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 741,
+        "title": "Thomas Hart Benton's Remarks to the Senate on the Expunging Resolution",
+        "author": "Thomas Hart Benton",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 815,
+        "title": "Democracy in America — Volume 1",
+        "author": "Alexis de Tocqueville",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 896,
+        "title": "The Jubilee of the Constitution Delivered at New York, April 30, 1839, Before the New York Historical Society",
+        "author": "John Quincy Adams",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1140,
+        "title": "Latter-Day Pamphlets",
+        "author": "Thomas Carlyle",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1187,
+        "title": "War of the Classes",
+        "author": "Jack London",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1325,
+        "title": "Twenty Years at Hull House; with Autobiographical Notes",
+        "author": "Jane Addams",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1440,
+        "title": "Woman and Labour",
+        "author": "Olive Schreiner",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1637,
+        "title": "Sanitary and Social Lectures and Essays",
+        "author": "Charles Kingsley",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1688,
+        "title": "The People of the Abyss",
+        "author": "Jack London",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 1689,
+        "title": "The Pivot of Civilization",
+        "author": "Margaret Sanger",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2053,
+        "title": "The American Republic: Its Constitution, Tendencies, and Destiny",
+        "author": "Orestes Augustus Brownson",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2162,
+        "title": "Anarchism and Other Essays",
+        "author": "Emma Goldman",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2611,
+        "title": "Confiscation; An Outline",
+        "author": "William Greenwood",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2801,
+        "title": "The Commonwealth of Oceana",
+        "author": "James Harrington",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 2810,
+        "title": "Plunkitt of Tammany Hall: a series of very plain talks on very practical politics, delivered by ex-Senator George Washi…",
+        "author": "George Washington Plunkitt",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3015,
+        "title": "The Man-Made World; Or, Our Androcentric Culture",
+        "author": "Charlotte Perkins Gilman",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3038,
+        "title": "The Armies of Labor: A Chronicle of the Organized Wage-Earners",
+        "author": "Samuel Peter Orth",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3053,
+        "title": "Signs of Change",
+        "author": "William Morris",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3316,
+        "title": "How Members of Congress Are Bribed",
+        "author": "J. Hampton Moore",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3540,
+        "title": "The Census in Moscow",
+        "author": "Tolstoy",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3541,
+        "title": "What to Do? Thoughts Evoked By the Census of Moscow",
+        "author": "Tolstoy",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3611,
+        "title": "Second Shetland Truck System Report",
+        "author": "William Guthrie",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 3742,
+        "title": "The Writings of Thomas Paine — Volume 2 (1779-1792): The Rights of Man",
+        "author": "Thomas Paine",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4335,
+        "title": "The Grounds of an Opinion on the Policy of Restricting the Importation of Foreign Corn Intended as an appendix to \"Obse…",
+        "author": "T. R. Malthus",
+        "interest": "society",
+        "sitelinks": 0
+      },
+      {
+        "gutenbergId": 4350,
+        "title": "Physics and Politics, or, Thoughts on the application of the principles of \"natural selection\" and \"inheritance\" to pol…",
+        "author": "Walter Bagehot",
+        "interest": "society",
+        "sitelinks": 0
+      }
+    ]
+  }
+}
