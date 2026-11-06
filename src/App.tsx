@@ -3,7 +3,7 @@ import { AppShell, Box, UnstyledButton, Text, Overlay, ScrollArea, ActionIcon } 
 import { useMediaQuery } from '@mantine/hooks';
 import { IconSearch, IconMenu2 } from '@tabler/icons-react';
 import type { RssFeedModel, FeedMenuItem, FeedItem, LessonRequest, AppScreen } from './types';
-import { alpha, tokens } from './theme';
+import { SAFE_TOP, alpha, tokens } from './theme';
 import { getAllSubscriptions, isDbEmpty, seedSubscriptions, cacheArticles, getArticlesByFeed, pruneExpiredArticles, pruneSeen } from './db';
 import { pruneCatalogCache } from './learning/cache';
 import { fetchFeedXml, parseRssXml } from './feed';
@@ -288,8 +288,28 @@ export function App() {
         </AppShell.Navbar>
       )}
 
+      {/* iOS status-bar backdrop: keeps scrolled content from showing behind
+          the clock/battery. Zero height where there is no top inset. */}
+      {!isDesktop && (
+        <Box
+          aria-hidden
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: SAFE_TOP,
+            zIndex: 60,
+            backgroundColor: tokens.surface,
+          }}
+        />
+      )}
+
       <AppShell.Main
-        style={{ paddingBottom: isDesktop ? 0 : 'calc(64px + env(safe-area-inset-bottom))' }}
+        style={{
+          paddingTop: isDesktop ? undefined : SAFE_TOP,
+          paddingBottom: isDesktop ? 0 : 'calc(64px + env(safe-area-inset-bottom))',
+        }}
         // The For You feed scrolls inside its own container; a downward swipe
         // there must move the feed, not trigger pull-to-refresh.
         onTouchStart={screen === 'feeds' ? onTouchStart : undefined}
@@ -301,7 +321,7 @@ export function App() {
           <Box
             style={{
               position: 'sticky',
-              top: 0,
+              top: SAFE_TOP,
               zIndex: 50,
               display: 'flex',
               alignItems: 'center',
@@ -361,7 +381,7 @@ export function App() {
                 flexDirection: 'column',
               }}
             >
-              <Box style={{ padding: '32px 24px 24px', borderBottom: `1px solid ${tokens.outlineVariant}` }}>
+              <Box style={{ padding: `calc(32px + ${SAFE_TOP}) 24px 24px`, borderBottom: `1px solid ${tokens.outlineVariant}` }}>
                 <Text
                   style={{
                     fontSize: 32,

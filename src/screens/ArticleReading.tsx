@@ -3,7 +3,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconArrowLeft, IconArticle, IconBookmark, IconBookmarkFilled, IconCheck, IconExternalLink, IconSchool, IconShare, IconTextSize, IconX } from '@tabler/icons-react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { FeedItem, LessonRequest } from '../types';
-import { alpha, tokens } from '../theme';
+import { SAFE_TOP, alpha, tokens } from '../theme';
 import { isBookmarked, addBookmark, removeBookmark } from '../db';
 import { useResolvedImage } from '../hooks/useResolvedImage';
 
@@ -170,6 +170,7 @@ export function ArticleReading({ article, feedTitle, onBack, onStartLesson }: Ar
         zIndex: 400,
         display: 'flex',
         flexDirection: 'column',
+        paddingTop: SAFE_TOP,
         backgroundColor: tokens.background,
       }}
     >
@@ -392,6 +393,7 @@ export function ArticleReading({ article, feedTitle, onBack, onStartLesson }: Ar
             zIndex: 500,
             display: 'flex',
             flexDirection: 'column',
+            paddingTop: SAFE_TOP,
             backgroundColor: tokens.background,
           }}
         >
@@ -522,7 +524,7 @@ export function ArticleReading({ article, feedTitle, onBack, onStartLesson }: Ar
             aria-label="Close image viewer"
             style={{
               position: 'absolute',
-              top: 16,
+              top: `calc(16px + ${SAFE_TOP})`,
               right: 16,
               padding: 10,
               borderRadius: 999,

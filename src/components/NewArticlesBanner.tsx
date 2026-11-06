@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Text, UnstyledButton } from '@mantine/core';
 import { IconNews, IconX } from '@tabler/icons-react';
-import { alpha, tokens } from '../theme';
+import { SAFE_TOP, alpha, tokens } from '../theme';
 
 interface NewArticlesBannerProps {
   readonly count: number;
@@ -25,7 +25,7 @@ export function NewArticlesBanner({ count, onDismiss }: NewArticlesBannerProps) 
     <Box
       style={{
         position: 'fixed',
-        top: 8,
+        top: `calc(8px + ${SAFE_TOP})`,
         left: 16,
         right: 16,
         zIndex: 300,

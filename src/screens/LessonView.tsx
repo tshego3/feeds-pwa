@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { ActionIcon, Anchor, Box, Skeleton, Stack, Tabs, Text } from '@mantine/core';
 import { IconArrowLeft, IconExternalLink } from '@tabler/icons-react';
 import type { Lesson, LessonRequest } from '../types';
-import { tokens } from '../theme';
+import { SAFE_TOP, tokens } from '../theme';
 import { SPEECH_RATES } from '../preferences';
 import { useLesson } from '../hooks/useLesson';
 import { useSpeech } from '../hooks/useSpeech';
@@ -57,6 +57,7 @@ export function LessonView({ request, onClose, onCompleted }: LessonViewProps) {
         zIndex: 450,
         display: 'flex',
         flexDirection: 'column',
+        paddingTop: SAFE_TOP,
         backgroundColor: tokens.background,
       }}
     >

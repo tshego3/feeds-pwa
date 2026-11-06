@@ -1,6 +1,6 @@
 import { Box, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
-import { alpha, tokens } from '../theme';
+import { SAFE_TOP, alpha, tokens } from '../theme';
 
 // Shown while a database upgrade waits for an older feeds tab to close. It
 // hides itself once the upgrade completes, so it has no dismiss button.
@@ -10,7 +10,7 @@ export function UpgradeBlockedBanner() {
       role="status"
       style={{
         position: 'fixed',
-        top: 8,
+        top: `calc(8px + ${SAFE_TOP})`,
         left: 16,
         right: 16,
         zIndex: 300,

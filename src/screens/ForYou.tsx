@@ -3,7 +3,7 @@ import { Box, Skeleton, Text } from '@mantine/core';
 import { useMediaQuery, useReducedMotion } from '@mantine/hooks';
 import { IconFlame } from '@tabler/icons-react';
 import type { FeedCard, FeedItem, InterestId, LessonRequest } from '../types';
-import { tokens } from '../theme';
+import { SAFE_TOP, tokens } from '../theme';
 import {
   answerReview,
   bookLink,
@@ -162,8 +162,9 @@ function Feed({ interests, onOpenArticle, onOpenLesson }: ForYouProps & { readon
     }
   }
 
-  // The mobile tab bar also covers the iPhone home-indicator area.
-  const feedHeight = `calc(100dvh - ${HEADER_HEIGHT}px${isDesktop ? '' : ` - ${MOBILE_TAB_BAR}px - env(safe-area-inset-bottom)`})`;
+  // The mobile tab bar also covers the iPhone home-indicator area; the shell
+  // pads the top by the iOS status-bar inset.
+  const feedHeight = `calc(100dvh - ${HEADER_HEIGHT}px${isDesktop ? '' : ` - ${SAFE_TOP} - ${MOBILE_TAB_BAR}px - env(safe-area-inset-bottom)`})`;
   return (
     <Box>
       <FeedHeader progress={progress} />

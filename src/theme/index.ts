@@ -77,6 +77,12 @@ export function alpha(color: string, percent: number): string {
   return `color-mix(in srgb, ${color} ${percent}%, transparent)`;
 }
 
+// Height of the iOS status bar / notch area. index.html sets
+// viewport-fit=cover + black-translucent, so on iOS the page draws under the
+// status bar and every top-anchored element must clear this inset. It is 0 on
+// Android and desktop, so the padding is a no-op there.
+export const SAFE_TOP = 'env(safe-area-inset-top, 0px)';
+
 function toVariables(palette: Readonly<Record<TokenName, string>>): Record<string, string> {
   return Object.fromEntries(TOKEN_NAMES.map((name) => [cssVar(name), palette[name]]));
 }
