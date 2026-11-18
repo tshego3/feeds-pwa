@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { precacheAndRoute } from 'workbox-precaching';
+import { matchPrecache, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { CacheFirst, NetworkFirst } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
@@ -13,6 +13,11 @@ import type { FeedItem } from './types';
 declare const self: ServiceWorkerGlobalScope;
 
 const DB_NAME = 'feeds-db';
+
+// The app is served from more than one path (/feeds-pwa/ and the custom
+// domain root), so derive URLs from the registration scope.
+const APP_URL = self.registration.scope;
+const ICON_URL = new URL('favicon.svg', APP_URL).href;
 
 // A background event does not get unlimited time: the browser terminates the
 // worker shortly after the event settles (~30s in Chromium, less on iOS).
@@ -116,7 +121,7 @@ self.addEventListener('fetch', (event) => {
   // Navigation — network first, fall back to precached index
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match('/feeds-pwa/index.html') as Promise<Response>),
+      fetch(request).catch(() => matchPrecache('index.html') as Promise<Response>),
     );
     return;
   }
@@ -147,10 +152,10 @@ self.addEventListener('push', (event) => {
         if (totalNewArticles === 0) {
           return self.registration.showNotification('feeds', {
             body: 'New articles available',
-            icon: '/feeds-pwa/favicon.svg',
-            badge: '/feeds-pwa/favicon.svg',
+            icon: ICON_URL,
+            badge: ICON_URL,
             tag: 'new-articles',
-            data: { url: '/feeds-pwa/' },
+            data: { url: APP_URL },
           } as NotificationOptions);
         }
         return undefined;
@@ -166,7 +171,7 @@ self.addEventListener('notificationclick', (event) => {
       if (existing) {
         existing.focus();
       } else {
-        self.clients.openWindow('/feeds-pwa/');
+        self.clients.openWindow(APP_URL);
       }
     }),
   );
@@ -282,9 +287,9 @@ async function showNewArticlesNotification(count: number): Promise<void> {
 
   await self.registration.showNotification('feeds', {
     body: `${count} new ${count === 1 ? 'article' : 'articles'} available`,
-    icon: '/feeds-pwa/favicon.svg',
-    badge: '/feeds-pwa/favicon.svg',
+    icon: ICON_URL,
+    badge: ICON_URL,
     tag: 'new-articles',
-    data: { url: '/feeds-pwa/' },
+    data: { url: APP_URL },
   } as NotificationOptions);
 }

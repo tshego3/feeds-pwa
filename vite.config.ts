@@ -35,7 +35,9 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/feeds-pwa/',
+  // Relative so one build serves both /feeds-pwa/ on github.io and the
+  // root of feeds.eoifilms.co.za. Safe because routing is hash-based.
+  base: './',
   // The book summarizer runs as a module Web Worker.
   worker: { format: 'es' },
   build: {

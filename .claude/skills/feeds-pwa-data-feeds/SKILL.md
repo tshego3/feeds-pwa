@@ -60,7 +60,7 @@ interface SavedArticle {
 2. Fetch strategy (all shared helpers live in `src/feed/proxy.ts`):
    - **Tier 1**: the self-hosted Cloudflare Worker proxy (`proxy/cors-proxy-worker.js`, deployed as `feeds-proxy`) - it passes the Cloudflare bot checks that block public proxies and serves a 5-minute edge cache. It is the ONLY proxy; the old public tiers (Netlify, AllOrigins, Codetabs) were removed deliberately.
    - **Tier 2**: direct fetch - the fallback when the Worker is unreachable; works when the feed sends CORS headers.
-   - The Worker allows the production origin (`https://tshego3.github.io`) plus `http://localhost:*` / `http://127.0.0.1:*` for dev; all other origins are rejected with 403.
+   - The Worker allows the production origins (`https://tshego3.github.io`, `https://feeds.eoifilms.co.za`) plus `http://localhost:*` / `http://127.0.0.1:*` for dev; all other origins are rejected with 403.
 3. Always URL-encode the feed URL when passing to the proxy (`buildProxyUrl` does this). 15-second `AbortController` timeout per request via `fetchWithTimeout`.
 4. Validate every response body looks like RSS/Atom/RDF before accepting - proxies return HTML error pages with 200 status.
 5. Handle partial failures gracefully - display available articles even if some feeds fail. Typed error categories: `network`, `parsing`, `unavailable` (with status).

@@ -13,11 +13,11 @@
  *        const CUSTOM_PROXY = 'https://feeds-proxy.<you>.workers.dev/?url=';
  */
 
-const ALLOWED_ORIGIN = 'https://tshego3.github.io';
+const ALLOWED_ORIGINS = ['https://tshego3.github.io', 'https://feeds.eoifilms.co.za'];
 
 // The production origin plus local dev servers (vite on any port).
 function isAllowedOrigin(origin) {
-  if (origin === ALLOWED_ORIGIN) return true;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
   try {
     const { protocol, hostname } = new URL(origin);
     return protocol === 'http:' && (hostname === 'localhost' || hostname === '127.0.0.1');
@@ -65,7 +65,7 @@ export default {
         'Content-Type': upstream.headers.get('Content-Type') ?? 'application/xml; charset=utf-8',
         // Echo the (validated) requesting origin so localhost dev works too;
         // Vary keeps caches from serving one origin's ACAO to another.
-        'Access-Control-Allow-Origin': origin && isAllowedOrigin(origin) ? origin : ALLOWED_ORIGIN,
+        'Access-Control-Allow-Origin': origin && isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
         Vary: 'Origin',
         'Cache-Control': 'public, max-age=300',
       },

@@ -18,14 +18,14 @@
  *   3. echo '<private JWK json>' | npx wrangler secret put VAPID_PRIVATE_JWK
  */
 
-const ALLOWED_ORIGIN = 'https://tshego3.github.io';
+const ALLOWED_ORIGINS = ['https://tshego3.github.io', 'https://feeds.eoifilms.co.za'];
 // Must stay >= MAX_FEEDS in src/notifications/push.ts (the default seed list
 // alone is 45 feeds).
 const MAX_FEEDS_PER_SUB = 200;
 
 // The production origin plus local dev servers (vite on any port).
 function isAllowedOrigin(origin) {
-  if (origin === ALLOWED_ORIGIN) return true;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
   try {
     const { protocol, hostname } = new URL(origin);
     return protocol === 'http:' && (hostname === 'localhost' || hostname === '127.0.0.1');
@@ -38,7 +38,7 @@ function isAllowedOrigin(origin) {
 // keeps caches from serving one origin's ACAO to another.
 function corsHeadersFor(origin) {
   return {
-    'Access-Control-Allow-Origin': origin && isAllowedOrigin(origin) ? origin : ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin': origin && isAllowedOrigin(origin) ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     Vary: 'Origin',

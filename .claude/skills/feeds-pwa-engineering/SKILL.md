@@ -47,7 +47,7 @@ Components (React/Mantine) --reads--> Hooks/State --calls--> Services (src/feed/
 ## Project Structure
 
 1. Entry point is `index.html` at root; app entry is `src/main.tsx` with MantineProvider and SW registration.
-2. Vite config at root with `base: '/feeds-pwa/'` for GitHub Pages.
+2. Vite config at root with `base: './'` so one build serves `/feeds-pwa/` (GitHub Pages) and the root of `https://feeds.eoifilms.co.za`. Never hardcode `/feeds-pwa/`; use `import.meta.env.BASE_URL` (app) or `self.registration.scope` (SW).
 3. Static assets in `public/` (manifest.webmanifest, favicon.svg, feeds.json seed subscriptions). No `src/assets/` for runtime data - use IndexedDB.
 4. `src/theme/` is the single source of design tokens.
 
@@ -103,7 +103,7 @@ Components (React/Mantine) --reads--> Hooks/State --calls--> Services (src/feed/
 
 ## Deployment (GitHub Pages)
 
-1. `base: '/feeds-pwa/'` in `vite.config.ts`; build to `dist/`; deploy with `npx gh-pages -d dist` (source: `gh-pages` branch).
+1. `base: './'` in `vite.config.ts`; build to `dist/`; deploy with `npx gh-pages -d dist` (source: `gh-pages` branch).
 2. Verify PWA install prompt on the deployed HTTPS URL. No source maps in production unless explicitly required.
 
 ## Adding a New Feature (Checklist)
